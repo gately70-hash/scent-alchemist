@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { 
   Search, Camera, X, Loader2, 
-  Trash2, Plus, ShoppingBag, ArrowDown, Sparkles, Layers, ArrowRight
+  Trash2, Plus, ShoppingBag, ArrowDown, Sparkles, Layers, ArrowRight, Check 
 } from 'lucide-react';
 
 const POPULAR_SHELF_PRESETS = [
@@ -442,7 +442,7 @@ export default function ScentAlchemistApp() {
 
                     <div className="p-8 md:p-10">
                       <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-100 text-emerald-800 px-4 py-3 rounded-xl mb-8 w-max">
-                        <Check className="w-5 h-5 text-emerald-600" strokeWidth={2.5}/>
+                        <Check className="w-5 h-5 text-emerald-600" />
                         <span className="font-bold">{calculatedBridgeData.bridge.targetMatch} Match Possible</span>
                       </div>
 
@@ -480,140 +480,4 @@ export default function ScentAlchemistApp() {
                   </div>
                 ) : (
                   /* FALLBACK ROUTE (Solo Clone) */
-                  <div className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl shadow-stone-300/50 border border-stone-200 text-center relative overflow-hidden">
-                    <div className="absolute top-0 inset-x-0 h-2 bg-stone-900"></div>
-                    <span className="text-xs font-bold text-stone-400 uppercase tracking-widest block mb-4">Standard Alternative</span>
-                    <h4 className="font-serif text-4xl text-stone-900 mb-4">{calculatedBridgeData.target.defaultSoloClone.name}</h4>
-                    <p className="text-base text-stone-600 max-w-xl mx-auto leading-relaxed mb-8">
-                      {calculatedBridgeData.target.defaultSoloClone.desc}
-                    </p>
-                    
-                    <button className="mx-auto bg-stone-900 hover:bg-stone-800 text-white rounded-2xl px-8 py-5 flex items-center justify-center gap-3 font-bold text-lg transition-all shadow-xl active:scale-95 hover:shadow-2xl">
-                      <ShoppingBag className="w-5 h-5" />
-                      Acquire 1-Bottle Clone • {calculatedBridgeData.target.defaultSoloClone.price}
-                    </button>
-                    
-                    <p className="text-xs text-stone-400 font-semibold uppercase tracking-wide mt-8">
-                      Want to unlock 95% fidelity? Ensure your entire collection is logged above.
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </main>
-
-      {/* Modern Scanner Modal */}
-      {scanModalOpen && (
-        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8 relative animate-in fade-in zoom-in-95 duration-200">
-            <button 
-              onClick={() => { setScanModalOpen(false); setScanStep('upload'); }}
-              className="absolute top-6 right-6 text-stone-400 hover:bg-stone-100 hover:text-stone-900 p-2 rounded-full transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <h3 className="font-serif text-2xl font-bold text-stone-900 mb-6">Scan Inventory</h3>
-            
-            {scanStep === 'upload' && (
-              <div className="space-y-6">
-                <div 
-                  onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-stone-200 hover:border-stone-900 rounded-2xl p-12 text-center cursor-pointer bg-stone-50 transition-colors group"
-                >
-                  <Camera className="w-8 h-8 text-stone-400 group-hover:text-stone-900 mx-auto mb-4 transition-colors" />
-                  <p className="text-sm font-bold text-stone-900">Capture Collection</p>
-                  <p className="text-xs text-stone-500 mt-2">Upload a photograph of your bottles</p>
-                  <input 
-                    ref={fileInputRef}
-                    type="file" 
-                    accept="image/*" 
-                    capture="environment"
-                    onChange={simulatedScan} 
-                    className="hidden" 
-                  />
-                </div>
-
-                <div className="flex items-center justify-center gap-4">
-                  <div className="h-px bg-stone-200 flex-1"></div>
-                  <span className="text-xs text-stone-400 font-bold uppercase">or</span>
-                  <div className="h-px bg-stone-200 flex-1"></div>
-                </div>
-
-                <button 
-                  onClick={simulatedScan}
-                  className="w-full bg-stone-100 hover:bg-stone-200 text-stone-900 rounded-xl px-6 py-4 text-sm font-bold transition-colors"
-                >
-                  Run Demo Calibration
-                </button>
-              </div>
-            )}
-
-            {scanStep === 'processing' && (
-              <div className="py-16 text-center">
-                <Loader2 className="w-10 h-10 text-stone-900 animate-spin mx-auto mb-6" />
-                <p className="text-sm font-bold text-stone-900 uppercase tracking-wider">Analyzing Image...</p>
-              </div>
-            )}
-
-            {scanStep === 'review' && (
-              <div className="space-y-6">
-                <p className="text-sm text-stone-600 font-medium">
-                  Review the detected bottles below.
-                </p>
-
-                <div className="space-y-3 max-h-56 overflow-y-auto pr-2">
-                  {detectedBottles.map((b, idx) => (
-                    <div key={idx} className="flex items-center gap-3 bg-stone-50 p-3 rounded-xl border border-stone-100">
-                      <input 
-                        type="text"
-                        value={b.name}
-                        onChange={(e) => updateDetected(idx, e.target.value)}
-                        className="flex-1 bg-transparent text-sm font-semibold text-stone-900 focus:outline-none"
-                      />
-                      <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">
-                        {b.confidence}%
-                      </span>
-                      <button 
-                        onClick={() => removeDetected(idx)}
-                        className="text-stone-400 hover:text-red-500 transition-colors p-1"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex gap-3">
-                  <input 
-                    type="text"
-                    value={newManualBottle}
-                    onChange={(e) => setNewManualBottle(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && addManualToDetected()}
-                    placeholder="Add missing item..."
-                    className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm text-stone-900 focus:outline-none focus:border-stone-900"
-                  />
-                  <button 
-                    onClick={addManualToDetected}
-                    className="bg-stone-900 text-white rounded-xl px-4 flex items-center justify-center hover:bg-stone-800 transition-colors"
-                  >
-                    <Plus className="w-5 h-5" />
-                  </button>
-                </div>
-
-                <button 
-                  onClick={confirmDetected}
-                  className="w-full bg-stone-900 hover:bg-stone-800 text-white rounded-xl px-6 py-4 text-sm font-bold transition-all active:scale-95 shadow-lg mt-2"
-                >
-                  Import Inventory ({detectedBottles.length})
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+                  <div className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl shadow-stone-300/50 border border-stone
