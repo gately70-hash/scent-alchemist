@@ -120,11 +120,11 @@ const BRIDGE_TARGET_DATABASE = [
 ];
 
 export default function ScentAlchemistApp() {
-  const [activeTab, setActiveTab] = useState('bridge');
+  const [activeTab, setActiveTab] = useState('shelf');
   const [myShelf, setMyShelf] = useState([]);
   const [customInput, setCustomInput] = useState("");
   
-  // Bridge Target Search State (Now starts blank!)
+  // Bridge Target Search State
   const [targetQuery, setTargetQuery] = useState("");
   const [targetSearchInput, setTargetSearchInput] = useState("");
 
@@ -198,7 +198,7 @@ export default function ScentAlchemistApp() {
 
   // The Bridge Calculation Algorithm
   const calculatedBridgeData = useMemo(() => {
-    if (!targetQuery) return null; // Returns null if no search has been made yet
+    if (!targetQuery) return null;
 
     const cleanTarget = targetQuery.toLowerCase().trim();
     const targetObj = BRIDGE_TARGET_DATABASE.find(
@@ -263,11 +263,26 @@ export default function ScentAlchemistApp() {
         {activeTab === 'shelf' ? (
           /* TAB 1: Collection / Wardrobe */
           <div className="animate-in fade-in duration-500">
-            <div className="text-center max-w-2xl mx-auto mb-12">
-              <h2 className="font-serif text-3xl font-light text-stone-900 mb-3">Curate Your Collection</h2>
-              <p className="text-sm text-stone-500 font-light leading-relaxed">
-                Inventory your current fragrances. We analyze your olfactory profile to determine which luxury silhouettes you are already positioned to synthesize.
-              </p>
+            
+            {/* THE SCENTMIX PROTOCOL - 3 Step Guide */}
+            <div className="mb-12 border-y border-stone-200 bg-white">
+              <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-stone-200">
+                <div className="p-8">
+                  <span className="text-[10px] uppercase tracking-widest font-bold text-stone-400 block mb-2">01. Inventory</span>
+                  <h3 className="font-serif text-lg text-stone-900 mb-2">Curate Your Collection</h3>
+                  <p className="text-xs text-stone-500 leading-relaxed">Add the fragrances currently sitting on your tray to establish your foundational olfactory baseline.</p>
+                </div>
+                <div className="p-8">
+                  <span className="text-[10px] uppercase tracking-widest font-bold text-stone-400 block mb-2">02. Target</span>
+                  <h3 className="font-serif text-lg text-stone-900 mb-2">Select a Silhouette</h3>
+                  <p className="text-xs text-stone-500 leading-relaxed">Navigate to the Silhouette Bridge and search for the £200+ luxury designer profile you want to wear.</p>
+                </div>
+                <div className="p-8">
+                  <span className="text-[10px] uppercase tracking-widest font-bold text-stone-400 block mb-2">03. Synthesize</span>
+                  <h3 className="font-serif text-lg text-stone-900 mb-2">Bridge the Gap</h3>
+                  <p className="text-xs text-stone-500 leading-relaxed">We calculate the accessible missing piece (often under £30) to complete the recipe. It serves brilliantly as a stunning standalone scent, AND as your bridge to luxury.</p>
+                </div>
+              </div>
             </div>
 
             <div className="bg-white border border-stone-200 p-8 md:p-12 shadow-sm">
