@@ -472,3 +472,172 @@ export default function ScentAlchemistApp() {
                         <div className="hidden md:block absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-8 border-t-2 border-dashed border-stone-300 z-0"></div>
 
                         {/* Owned Box */}
+                        <div className="bg-stone-50 border border-stone-200 p-6 relative z-10">
+                          <span className="text-[10px] uppercase tracking-widest font-bold text-stone-400 block mb-3">01. Foundation (Owned)</span>
+                          <h5 className="font-serif text-xl text-stone-900 mb-2">{calculatedBridgeData.bridge.matchingShelfBottle}</h5>
+                          <p className="text-xs text-stone-500">{calculatedBridgeData.bridge.ownedRole}</p>
+                        </div>
+
+                        {/* Missing Link Box (Kept light, but with a stark black CTA button) */}
+                        <div className="bg-white border border-stone-200 p-6 relative z-10 shadow-md">
+                          <span className="text-[10px] uppercase tracking-widest font-bold text-stone-900 block mb-3">02. Missing Element (Required)</span>
+                          <h5 className="font-serif text-xl text-stone-900 mb-2">{calculatedBridgeData.bridge.missingPieceName}</h5>
+                          <p className="text-xs text-stone-500 mb-6">{calculatedBridgeData.bridge.missingRole}</p>
+                          
+                          {/* CRITICAL MONETIZATION CTA - STARK BLACK */}
+                          <button className="w-full bg-stone-900 hover:bg-stone-800 text-white flex items-center justify-center gap-2 px-6 py-4 text-[11px] uppercase tracking-widest font-bold transition-all shadow-lg">
+                            <ShoppingBag className="w-4 h-4" strokeWidth={2} />
+                            Acquire Element • {calculatedBridgeData.bridge.missingPrice}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Application Protocol */}
+                      <div className="mt-10 pt-8 border-t border-stone-200 text-center max-w-2xl mx-auto">
+                        <span className="text-[10px] uppercase tracking-widest font-bold text-stone-400 block mb-4">Application Protocol</span>
+                        <p className="text-sm md:text-base text-stone-800 leading-relaxed font-serif italic">
+                          &quot;{calculatedBridgeData.bridge.recipe}&quot;
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    /* User owns nothing relevant - Show Solo Clone CTA */
+                    <div className="bg-white text-stone-900 border border-stone-200 shadow-sm p-8 md:p-12 text-center">
+                      <span className="text-[10px] uppercase tracking-widest font-bold text-stone-400 block mb-3">Standard Alternative</span>
+                      <h4 className="font-serif text-3xl text-stone-900 mb-3">{calculatedBridgeData.target.defaultSoloClone.name}</h4>
+                      <p className="text-sm text-stone-500 max-w-md mx-auto leading-relaxed mb-8">
+                        {calculatedBridgeData.target.defaultSoloClone.desc}
+                      </p>
+                      
+                      {/* CRITICAL MONETIZATION CTA */}
+                      <div className="flex flex-col items-center gap-4">
+                        <button className="bg-stone-900 hover:bg-stone-800 text-white flex items-center justify-center gap-2 px-8 py-4 w-full md:w-auto text-[11px] uppercase tracking-widest font-bold transition-all shadow-xl">
+                          <ShoppingBag className="w-4 h-4" />
+                          Acquire 1-Bottle Clone • {calculatedBridgeData.target.defaultSoloClone.price}
+                        </button>
+                        <p className="text-[10px] text-stone-400 uppercase tracking-widest mt-4">
+                          Want to unlock 95% fidelity? Ensure your entire collection is logged above to check for synergistic bridges.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Luxury Minimalist Scanner Modal */}
+      {scanModalOpen && (
+        <div className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white border border-stone-200 shadow-2xl max-w-lg w-full p-8 md:p-12 relative animate-in fade-in zoom-in-95 duration-200">
+            <button 
+              onClick={() => { setScanModalOpen(false); setScanStep('upload'); }}
+              className="absolute top-6 right-6 text-stone-400 hover:text-stone-900 transition-colors"
+            >
+              <X className="w-5 h-5" strokeWidth={1.5} />
+            </button>
+
+            <h3 className="font-serif text-2xl font-light text-stone-900 mb-2">Scan Inventory</h3>
+            
+            {scanStep === 'upload' && (
+              <div className="mt-8 space-y-6">
+                <div 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="border border-stone-300 hover:border-stone-900 p-12 text-center cursor-pointer bg-stone-50 transition-colors group"
+                >
+                  <Camera className="w-6 h-6 text-stone-300 group-hover:text-stone-900 mx-auto mb-4 transition-colors" strokeWidth={1.5} />
+                  <p className="text-xs uppercase tracking-widest font-semibold text-stone-900">Capture Collection</p>
+                  <p className="text-[11px] text-stone-500 mt-2">Upload a photograph of your bottles</p>
+                  <input 
+                    ref={fileInputRef}
+                    type="file" 
+                    accept="image/*" 
+                    capture="environment"
+                    onChange={simulatedScan} 
+                    className="hidden" 
+                  />
+                </div>
+
+                <div className="flex items-center justify-center gap-4">
+                  <div className="h-px bg-stone-200 flex-1"></div>
+                  <span className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold">or</span>
+                  <div className="h-px bg-stone-200 flex-1"></div>
+                </div>
+
+                <button 
+                  onClick={simulatedScan}
+                  className="w-full bg-stone-100 hover:bg-stone-200 text-stone-900 px-6 py-4 text-[10px] uppercase tracking-widest font-semibold transition-colors"
+                >
+                  Run Demo Calibration
+                </button>
+              </div>
+            )}
+
+            {scanStep === 'processing' && (
+              <div className="my-16 text-center">
+                <Loader2 className="w-8 h-8 text-stone-900 animate-spin mx-auto mb-6" strokeWidth={1.5} />
+                <p className="text-[10px] uppercase tracking-widest font-semibold text-stone-900">Analyzing Labels &amp; Silhouettes</p>
+              </div>
+            )}
+
+            {scanStep === 'review' && (
+              <div className="mt-8 space-y-6">
+                <p className="text-xs text-stone-500 font-light">
+                  Please verify the algorithmic detection below. Adjust nomenclature if necessary.
+                </p>
+
+                <div className="space-y-3 max-h-56 overflow-y-auto pr-2">
+                  {detectedBottles.map((b, idx) => (
+                    <div key={idx} className="flex items-center gap-3 border-b border-stone-200 pb-2">
+                      <input 
+                        type="text"
+                        value={b.name}
+                        onChange={(e) => updateDetected(idx, e.target.value)}
+                        className="flex-1 bg-transparent text-sm font-serif text-stone-900 focus:outline-none focus:border-stone-900"
+                      />
+                      <span className="text-[10px] text-stone-400 uppercase tracking-widest">
+                        {b.confidence}%
+                      </span>
+                      <button 
+                        onClick={() => removeDetected(idx)}
+                        className="text-stone-300 hover:text-stone-900 transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" strokeWidth={1.5} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="pt-4 flex gap-3">
+                  <input 
+                    type="text"
+                    value={newManualBottle}
+                    onChange={(e) => setNewManualBottle(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && addManualToDetected()}
+                    placeholder="Add missing item..."
+                    className="flex-1 bg-transparent border-b border-stone-300 px-0 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:border-stone-900"
+                  />
+                  <button 
+                    onClick={addManualToDetected}
+                    className="text-stone-900 hover:text-stone-600 p-2"
+                  >
+                    <Plus className="w-5 h-5" strokeWidth={1.5} />
+                  </button>
+                </div>
+
+                <button 
+                  onClick={confirmDetected}
+                  className="w-full bg-stone-900 hover:bg-stone-800 text-white px-6 py-4 text-[10px] uppercase tracking-widest font-semibold transition-colors mt-4"
+                >
+                  Import Inventory ({detectedBottles.length})
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
