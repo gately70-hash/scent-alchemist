@@ -629,4 +629,15 @@ export default function ScentAlchemistApp() {
 
                 <button 
                   onClick={confirmDetected}
-                  className="w-full bg-stone-900 hover:bg-stone-800
+                  className="w-full bg-stone-900 hover:bg-stone-800 text-white px-6 py-4 text-[10px] uppercase tracking-widest font-semibold transition-colors mt-4"
+                >
+                  Import Inventory ({detectedBottles.length})
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
