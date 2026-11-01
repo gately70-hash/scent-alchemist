@@ -113,7 +113,7 @@ export default function ScentAlchemistApp() {
   const [myShelf, setMyShelf] = useState([]);
   const [customInput, setCustomInput] = useState("");
   
-  // Bridge Target Search State (Starts blank)
+  // Bridge Target Search State
   const [targetQuery, setTargetQuery] = useState("");
   const [targetSearchInput, setTargetSearchInput] = useState("");
 
@@ -182,7 +182,6 @@ export default function ScentAlchemistApp() {
     e.preventDefault();
     if (targetSearchInput.trim()) {
       setTargetQuery(targetSearchInput.trim());
-      // Smooth scroll to results
       setTimeout(() => {
         document.getElementById('bridge-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
@@ -217,18 +216,19 @@ export default function ScentAlchemistApp() {
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 font-sans selection:bg-stone-200 selection:text-black">
       
-      {/* Editorial Header */}
-      <header className="bg-white border-b border-stone-200 sticky top-0 z-30 px-8 py-6">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      {/* Editorial Header - Enlarged Logo */}
+      <header className="bg-white border-b border-stone-200 sticky top-0 z-30 px-6 py-6 md:px-12">
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-center md:text-left">
-            <h1 className="font-serif text-2xl tracking-[0.2em] font-light uppercase text-stone-900">
+            <h1 className="font-serif text-3xl md:text-4xl tracking-[0.25em] font-light uppercase text-stone-900">
               Scentmix
             </h1>
-            <p className="text-[10px] tracking-widest uppercase text-stone-400 mt-1 font-semibold">
+            <p className="text-[10px] tracking-widest uppercase text-stone-400 mt-2 font-semibold">
               Bespoke Silhouette Synthesis
             </p>
           </div>
-          <div className="hidden md:block text-[10px] uppercase tracking-widest font-semibold text-stone-400">
+          <div className="hidden md:flex items-center gap-2 text-[10px] uppercase tracking-widest font-semibold text-stone-400">
+            <Layers className="w-4 h-4" strokeWidth={1.5} />
             Inventory ({myShelf.length})
           </div>
         </div>
@@ -259,7 +259,7 @@ export default function ScentAlchemistApp() {
         </section>
 
         {/* SECTION 1: INVENTORY CURATION */}
-        <section className="max-w-5xl mx-auto p-6 md:p-12">
+        <section className="max-w-5xl mx-auto p-6 md:p-12 pt-16">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <h2 className="font-serif text-3xl font-light text-stone-900 mb-3">What do you own?</h2>
             <p className="text-sm text-stone-500 font-light leading-relaxed">
@@ -338,13 +338,12 @@ export default function ScentAlchemistApp() {
 
         {/* SECTION 2: INSTANT ALCHEMY (What they can make now) */}
         {myShelf.length >= 2 && (
-          <section className="max-w-5xl mx-auto px-6 pb-12">
+          <section className="max-w-5xl mx-auto px-6 pb-16">
             <div className="mb-6">
               <h3 className="font-serif text-2xl text-stone-900">Current Capabilities</h3>
               <p className="text-xs text-stone-500 mt-1">What you can synthesize using 100% owned bottles.</p>
             </div>
             
-            {/* Hardcoded visual examples of owned capabilities for prototype */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white border border-stone-200 p-8 shadow-sm">
                 <span className="text-[10px] bg-stone-900 text-white font-bold px-2 py-1 uppercase tracking-widest">94% Silhouette Match</span>
@@ -380,14 +379,14 @@ export default function ScentAlchemistApp() {
           </section>
         )}
 
-        {/* SECTION 3: THE BRIDGE (Monetization Engine) */}
-        <section className="bg-stone-900 text-white border-t border-stone-800 py-16 md:py-24">
+        {/* SECTION 3: THE BRIDGE (Monetization Engine) - NOW IN LIGHT THEME */}
+        <section className="bg-stone-100 border-t border-stone-200 py-16 md:py-24">
           <div className="max-w-5xl mx-auto px-6 md:px-12">
             
             <div className="text-center max-w-2xl mx-auto mb-12">
-              <span className="text-amber-500 mb-4 inline-block"><ArrowDown className="w-6 h-6 animate-bounce" /></span>
-              <h2 className="font-serif text-4xl font-light mb-4">What do you want to smell like?</h2>
-              <p className="text-sm text-stone-400 font-light leading-relaxed">
+              <span className="text-stone-400 mb-4 inline-block"><ArrowDown className="w-6 h-6 animate-bounce" strokeWidth={1.5}/></span>
+              <h2 className="font-serif text-4xl font-light text-stone-900 mb-4">What do you want to smell like?</h2>
+              <p className="text-sm text-stone-500 font-light leading-relaxed">
                 Enter your desired luxury target. We will calculate the missing piece required to bridge your current collection to the final silhouette.
               </p>
             </div>
@@ -399,9 +398,9 @@ export default function ScentAlchemistApp() {
                 value={targetSearchInput}
                 onChange={(e) => setTargetSearchInput(e.target.value)}
                 placeholder="Search target (e.g. Bleu de Chanel Parfum, Angels Share)..."
-                className="w-full bg-transparent border-b-2 border-stone-700 py-4 pl-0 pr-12 text-lg font-serif text-white placeholder-stone-500 focus:outline-none focus:border-white transition-colors"
+                className="w-full bg-transparent border-b-2 border-stone-300 py-4 pl-0 pr-12 text-lg font-serif text-stone-900 placeholder-stone-400 focus:outline-none focus:border-stone-900 transition-colors"
               />
-              <button type="submit" className="absolute right-0 top-4 text-stone-400 hover:text-white transition-colors">
+              <button type="submit" className="absolute right-0 top-4 text-stone-500 hover:text-stone-900 transition-colors">
                 <Search className="w-6 h-6" strokeWidth={1.5} />
               </button>
             </form>
@@ -419,7 +418,7 @@ export default function ScentAlchemistApp() {
                       document.getElementById('bridge-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }, 100);
                   }}
-                  className="text-[10px] uppercase tracking-wider border border-stone-700 text-stone-300 hover:border-white hover:text-white px-4 py-2 transition-all"
+                  className="text-[10px] uppercase tracking-wider border border-stone-200 text-stone-500 hover:border-stone-900 hover:text-stone-900 bg-white px-4 py-2 transition-all shadow-sm"
                 >
                   {t.name}
                 </button>
@@ -432,22 +431,22 @@ export default function ScentAlchemistApp() {
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                   
                   {/* Target Overview */}
-                  <div className="border border-stone-700 bg-stone-950 p-8 md:p-12 mb-8">
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-stone-800 pb-8 mb-8">
+                  <div className="bg-white border border-stone-200 shadow-sm p-8 md:p-12 mb-8">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-stone-100 pb-8 mb-8">
                       <div>
-                        <span className="text-[10px] uppercase tracking-widest font-bold text-stone-500 block mb-2">{calculatedBridgeData.target.house}</span>
-                        <h3 className="font-serif text-4xl font-normal text-white">{calculatedBridgeData.target.name}</h3>
+                        <span className="text-[10px] uppercase tracking-widest font-bold text-stone-400 block mb-2">{calculatedBridgeData.target.house}</span>
+                        <h3 className="font-serif text-4xl font-normal text-stone-900">{calculatedBridgeData.target.name}</h3>
                       </div>
                       <div className="text-left md:text-right">
-                        <span className="text-[10px] uppercase tracking-widest font-semibold text-stone-500 block mb-1">Retail Valuation</span>
-                        <span className="text-lg font-light text-white">{calculatedBridgeData.target.retail}</span>
+                        <span className="text-[10px] uppercase tracking-widest font-semibold text-stone-400 block mb-1">Retail Valuation</span>
+                        <span className="text-lg font-light text-stone-900">{calculatedBridgeData.target.retail}</span>
                       </div>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase tracking-widest font-semibold text-stone-500 block mb-3">Key Accords</span>
+                      <span className="text-[10px] uppercase tracking-widest font-semibold text-stone-400 block mb-3">Key Accords</span>
                       <div className="flex flex-wrap gap-2">
                         {calculatedBridgeData.target.notes.map((n) => (
-                          <span key={n} className="text-[10px] uppercase tracking-wider border border-stone-700 text-stone-400 px-3 py-1">
+                          <span key={n} className="text-[10px] uppercase tracking-wider border border-stone-200 text-stone-600 px-3 py-1">
                             {n}
                           </span>
                         ))}
@@ -458,7 +457,7 @@ export default function ScentAlchemistApp() {
                   {/* Missing Link / Acquisition Calculation */}
                   {calculatedBridgeData.bridge ? (
                     /* User owns a bridge base */
-                    <div className="bg-white text-stone-900 border border-stone-200 p-8 md:p-12 relative overflow-hidden">
+                    <div className="bg-white text-stone-900 border border-stone-200 p-8 md:p-12 relative overflow-hidden shadow-sm">
                       <div className="absolute top-0 right-0 bg-stone-900 text-white text-[10px] uppercase tracking-widest font-bold px-4 py-2">
                         {calculatedBridgeData.bridge.targetMatch} Match Found
                       </div>
@@ -479,14 +478,14 @@ export default function ScentAlchemistApp() {
                           <p className="text-xs text-stone-500">{calculatedBridgeData.bridge.ownedRole}</p>
                         </div>
 
-                        {/* Missing Link Box */}
-                        <div className="bg-stone-900 text-white p-6 relative z-10 shadow-xl ring-1 ring-stone-900 ring-offset-4 ring-offset-white">
-                          <span className="text-[10px] uppercase tracking-widest font-bold text-amber-500 block mb-3">02. Missing Element (Required)</span>
-                          <h5 className="font-serif text-xl text-white mb-2">{calculatedBridgeData.bridge.missingPieceName}</h5>
-                          <p className="text-xs text-stone-400 mb-6">{calculatedBridgeData.bridge.missingRole}</p>
+                        {/* Missing Link Box (Kept light, but with a stark black CTA button) */}
+                        <div className="bg-white border border-stone-200 p-6 relative z-10 shadow-md">
+                          <span className="text-[10px] uppercase tracking-widest font-bold text-stone-900 block mb-3">02. Missing Element (Required)</span>
+                          <h5 className="font-serif text-xl text-stone-900 mb-2">{calculatedBridgeData.bridge.missingPieceName}</h5>
+                          <p className="text-xs text-stone-500 mb-6">{calculatedBridgeData.bridge.missingRole}</p>
                           
-                          {/* CRITICAL MONETIZATION CTA */}
-                          <button className="w-full bg-white hover:bg-stone-200 text-stone-900 flex items-center justify-center gap-2 px-6 py-4 text-[11px] uppercase tracking-widest font-bold transition-all">
+                          {/* CRITICAL MONETIZATION CTA - STARK BLACK */}
+                          <button className="w-full bg-stone-900 hover:bg-stone-800 text-white flex items-center justify-center gap-2 px-6 py-4 text-[11px] uppercase tracking-widest font-bold transition-all shadow-lg">
                             <ShoppingBag className="w-4 h-4" strokeWidth={2} />
                             Acquire Element • {calculatedBridgeData.bridge.missingPrice}
                           </button>
@@ -503,7 +502,7 @@ export default function ScentAlchemistApp() {
                     </div>
                   ) : (
                     /* User owns nothing relevant - Show Solo Clone CTA */
-                    <div className="bg-white text-stone-900 border border-stone-200 p-8 md:p-12 text-center">
+                    <div className="bg-white text-stone-900 border border-stone-200 shadow-sm p-8 md:p-12 text-center">
                       <span className="text-[10px] uppercase tracking-widest font-bold text-stone-400 block mb-3">Standard Alternative</span>
                       <h4 className="font-serif text-3xl text-stone-900 mb-3">{calculatedBridgeData.target.defaultSoloClone.name}</h4>
                       <p className="text-sm text-stone-500 max-w-md mx-auto leading-relaxed mb-8">
@@ -630,15 +629,4 @@ export default function ScentAlchemistApp() {
 
                 <button 
                   onClick={confirmDetected}
-                  className="w-full bg-stone-900 hover:bg-stone-800 text-white px-6 py-4 text-[10px] uppercase tracking-widest font-semibold transition-colors mt-4"
-                >
-                  Import Inventory ({detectedBottles.length})
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+                  className="w-full bg-stone-900 hover:bg-stone-800
