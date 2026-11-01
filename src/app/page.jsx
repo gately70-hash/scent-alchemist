@@ -109,7 +109,6 @@ const TARGET_PRESETS = [
 
 export default function ScentAlchemistApp() {
   const [activeTab, setActiveTab] = useState('shelf');
-  // Starts completely clean for new visitors
   const [myShelf, setMyShelf] = useState([]);
   const [customInput, setCustomInput] = useState("");
   const [targetQuery, setTargetQuery] = useState("Angels' Share");
@@ -208,7 +207,7 @@ export default function ScentAlchemistApp() {
               <span className="font-serif tracking-wider font-bold text-lg text-amber-100">SCENT ALCHEMIST</span>
               <span className="text-[10px] uppercase tracking-widest bg-amber-500/10 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full font-semibold">Zero-DB AI</span>
             </div>
-            <p className="text-xs text-neutral-400">Fragrance Layering & Reverse-Dupe Synthesis</p>
+            <p className="text-xs text-neutral-400">Fragrance Layering &amp; Reverse-Dupe Synthesis</p>
           </div>
         </div>
 
@@ -348,7 +347,7 @@ export default function ScentAlchemistApp() {
                       <Flame className="w-5 h-5 text-amber-500" />
                       Top 3 Designer Profiles You Can Recreate
                     </h3>
-                    <p className="text-xs text-neutral-400">Ranked by molecular accord compatibility & sillage balance</p>
+                    <p className="text-xs text-neutral-400">Ranked by molecular accord compatibility &amp; sillage balance</p>
                   </div>
                   <span className="text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-full">
                     {myShelf.length} Bottles Analyzed
@@ -486,148 +485,4 @@ export default function ScentAlchemistApp() {
               <div className="border border-neutral-800 rounded-2xl p-12 text-center bg-neutral-900/30">
                 <FlaskConical className="w-12 h-12 text-amber-500/40 mx-auto mb-4 stroke-1" />
                 <h3 className="text-lg font-serif font-bold text-neutral-200">Your Tray is Waiting</h3>
-                <p className="text-xs text-neutral-400 max-w-md mx-auto mt-2 leading-relaxed">
-                  Add at least 2 fragrances to your wardrobe above (or scan your collection) to calculate custom molecular layering recipes.
-                </p>
-                <button
-                  onClick={() => setScanModalOpen(true)}
-                  className="mt-6 inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 text-amber-400 px-4 py-2 rounded-xl text-xs font-semibold transition-all"
-                >
-                  <Camera className="w-4 h-4" />
-                  Scan My Tray Now
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
-          /* Reverse Dupe Matcher Tab */
-          <div className="space-y-8">
-            <div className="bg-neutral-900/60 border border-neutral-800/80 rounded-2xl p-6 shadow-xl backdrop-blur-sm">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-neutral-800">
-                <div>
-                  <h2 className="text-xl font-serif font-bold text-neutral-100 flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-amber-400" />
-                    Reverse Dupe & Alchemy Matcher
-                  </h2>
-                  <p className="text-xs text-neutral-400 mt-1">
-                    Pick an expensive luxury target to discover its best solo clone and 2-bottle alchemy layer.
-                  </p>
-                </div>
-
-                <div className="flex gap-2">
-                  {TARGET_PRESETS.map((target) => (
-                    <button
-                      key={target.name}
-                      onClick={() => setTargetQuery(target.name)}
-                      className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
-                        currentTargetData.name === target.name
-                          ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold'
-                          : 'bg-neutral-950/60 border-neutral-800 text-neutral-400 hover:text-neutral-200'
-                      }`}
-                    >
-                      {target.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Target Banner */}
-              <div className="mt-6 bg-gradient-to-r from-neutral-950 via-neutral-900 to-neutral-950 border border-amber-500/20 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                  <span className="text-[10px] font-semibold uppercase tracking-widest text-amber-400">{currentTargetData.house}</span>
-                  <h3 className="text-2xl font-serif font-bold text-neutral-100">{currentTargetData.name}</h3>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {currentTargetData.keyNotes.map(n => (
-                      <span key={n} className="text-[11px] bg-neutral-800/60 text-neutral-300 px-2.5 py-0.5 rounded-full border border-neutral-700/50">
-                        {n}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-neutral-950/80 border border-neutral-800 px-5 py-3 rounded-xl text-right">
-                  <span className="text-[10px] uppercase text-neutral-500 block font-semibold">Retail Price</span>
-                  <span className="text-lg font-bold text-amber-400">{currentTargetData.retail}</span>
-                </div>
-              </div>
-
-              {/* Solo vs Alchemy Comparison */}
-              <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Option A: Solo Clone */}
-                <div className="bg-neutral-950/80 border border-neutral-800 rounded-2xl p-6 flex flex-col justify-between">
-                  <div>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <span className="text-[10px] uppercase tracking-wider font-bold text-neutral-500">Route 1 • 1-Bottle Budget Clone</span>
-                        <h4 className="text-lg font-bold text-neutral-100 mt-1">{currentTargetData.soloClone.name}</h4>
-                        <span className="text-xs text-neutral-400">{currentTargetData.soloClone.house} • {currentTargetData.soloClone.price}</span>
-                      </div>
-                      <span className="bg-neutral-800 text-neutral-300 text-xs px-2.5 py-1 rounded-md font-bold">
-                        {currentTargetData.soloClone.similarity} Match
-                      </span>
-                    </div>
-
-                    <div className="mt-4 p-4 rounded-xl bg-neutral-900/50 border border-neutral-800/70 text-xs text-neutral-300 leading-relaxed">
-                      {currentTargetData.soloClone.verdict}
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-4 border-t border-neutral-800/80 flex items-center justify-between">
-                    <span className="text-xs text-neutral-500">Fastest solution</span>
-                    <button className="text-xs bg-neutral-800 hover:bg-neutral-700 text-neutral-200 px-4 py-2 rounded-xl font-semibold transition-colors">
-                      View Retailer
-                    </button>
-                  </div>
-                </div>
-
-                {/* Option B: Alchemy Layer */}
-                <div className="bg-neutral-950/80 border border-amber-500/40 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden">
-                  <div className="absolute top-0 right-0 bg-amber-500 text-neutral-950 text-[10px] font-black uppercase px-3 py-1 rounded-bl-xl tracking-wider">
-                    Superior Drydown
-                  </div>
-                  <div>
-                    <div>
-                      <span className="text-[10px] uppercase tracking-wider font-bold text-amber-400">Route 2 • 2-Bottle Alchemy Recipe</span>
-                      <h4 className="text-lg font-bold text-neutral-100 mt-1">The Layered Reconstruction</h4>
-                      <span className="text-xs text-neutral-400">Combines {currentTargetData.alchemyPair.base.name} + {currentTargetData.alchemyPair.accent.name}</span>
-                    </div>
-
-                    <div className="mt-4 space-y-2">
-                      <div className="bg-neutral-900/60 p-3 rounded-xl border border-neutral-800 flex justify-between items-center text-xs">
-                        <div>
-                          <span className="font-semibold text-neutral-200">{currentTargetData.alchemyPair.base.name}</span>
-                          <span className="text-neutral-500 block text-[11px]">{currentTargetData.alchemyPair.base.role}</span>
-                        </div>
-                        <span className="bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-bold">{currentTargetData.alchemyPair.base.sprays} sprays</span>
-                      </div>
-
-                      <div className="bg-neutral-900/60 p-3 rounded-xl border border-neutral-800 flex justify-between items-center text-xs">
-                        <div>
-                          <span className="font-semibold text-neutral-200">{currentTargetData.alchemyPair.accent.name}</span>
-                          <span className="text-neutral-500 block text-[11px]">{currentTargetData.alchemyPair.accent.role}</span>
-                        </div>
-                        <span className="bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-bold">{currentTargetData.alchemyPair.accent.sprays} spray</span>
-                      </div>
-                    </div>
-
-                    <p className="mt-4 text-xs text-neutral-300 bg-amber-500/5 border border-amber-500/20 p-3 rounded-xl leading-relaxed">
-                      {currentTargetData.alchemyPair.synergyNote}
-                    </p>
-                  </div>
-
-                  <div className="mt-6 pt-4 border-t border-neutral-800/80 flex items-center justify-between">
-                    <span className="text-xs font-bold text-amber-400">{currentTargetData.alchemyPair.similarity} Silhouette Match</span>
-                    <button className="text-xs bg-amber-500 hover:bg-amber-400 text-neutral-950 px-4 py-2 rounded-xl font-bold transition-colors">
-                      Get The Missing Accent
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
-
-      {/* Camera / Photo Scanner Modal */}
-      {scanModalOpen && (
-        <div className="fixed inset-0 bg-neutral-950/80 backdrop-blur-md z-50
+                <p className="text-xs text-
