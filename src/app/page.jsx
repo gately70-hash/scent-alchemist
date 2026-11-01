@@ -2,8 +2,8 @@
 
 import React, { useState, useMemo, useRef } from 'react';
 import { 
-  Search, Camera, Upload, X, Loader2, 
-  Trash2, Plus, ShoppingBag, Check, ArrowDown
+  Search, Camera, X, Loader2, 
+  Trash2, Plus, ShoppingBag, ArrowDown, Sparkles, Layers, ArrowRight
 } from 'lucide-react';
 
 const POPULAR_SHELF_PRESETS = [
@@ -188,7 +188,6 @@ export default function ScentAlchemistApp() {
     }
   };
 
-  // The Bridge Calculation Algorithm
   const calculatedBridgeData = useMemo(() => {
     if (!targetQuery) return null;
 
@@ -214,281 +213,319 @@ export default function ScentAlchemistApp() {
   }, [targetQuery, myShelf]);
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-900 font-sans selection:bg-stone-200 selection:text-black">
+    <div className="min-h-screen bg-stone-50 text-stone-900 font-sans selection:bg-amber-200 selection:text-stone-900 pb-24">
       
-      {/* Sticky Header */}
-      <header className="bg-white border-b border-stone-200 sticky top-0 z-30 px-6 py-6 md:px-12">
-        <div className="max-w-5xl mx-auto flex items-center justify-center md:justify-start">
-          <div className="text-center md:text-left">
-            <h1 className="font-serif text-3xl md:text-4xl tracking-[0.25em] font-light uppercase text-stone-900">
-              Scentmix
-            </h1>
-            <p className="text-[10px] tracking-widest uppercase text-stone-400 mt-2 font-semibold">
-              Bespoke Silhouette Synthesis
-            </p>
+      {/* Interactive Floating Header */}
+      <header className="sticky top-0 z-40 px-4 py-4 md:px-8">
+        <div className="max-w-6xl mx-auto bg-white/80 backdrop-blur-lg border border-stone-200/50 shadow-sm rounded-2xl px-6 py-4 flex items-center justify-between transition-all">
+          <h1 className="font-serif text-2xl font-bold tracking-wider text-stone-900">
+            Scentmix
+          </h1>
+          <div className="flex items-center gap-3 bg-stone-100 px-4 py-2 rounded-full text-xs font-semibold text-stone-600 shadow-inner">
+            <Layers className="w-4 h-4 text-stone-500" />
+            Inventory ({myShelf.length})
           </div>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto md:py-12 p-4">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 mt-8">
         
-        {/* THE SINGLE UNIFIED CONTAINER */}
-        <div className="bg-white border border-stone-200 shadow-xl overflow-hidden relative">
-          
-          {/* Subtle vertical connector line guiding the eye down */}
-          <div className="hidden md:block absolute left-12 top-0 bottom-0 w-px bg-stone-100 z-0"></div>
-
-          {/* PROTOCOL HEADER */}
-          <div className="bg-stone-50/50 border-b border-stone-100 p-8 md:p-12 relative z-10">
-            <p className="text-sm text-stone-500 font-light leading-relaxed text-center max-w-2xl mx-auto">
-              Welcome to the Scentmix Engine. First, log the fragrances sitting on your tray. 
-              Then, search for any £200+ luxury silhouette you desire. We will calculate the 
-              exact missing piece needed to bridge your collection to the final profile.
-            </p>
-          </div>
-
-          {/* STEP 01: INVENTORY */}
-          <div className="p-8 md:p-12 relative z-10 border-b border-stone-100">
-            <div className="flex items-center gap-6 mb-8">
-              <span className="font-serif text-3xl md:text-4xl text-stone-300">01</span>
-              <div>
-                <h2 className="font-serif text-2xl font-light text-stone-900">Establish Baseline</h2>
-                <p className="text-xs text-stone-400 uppercase tracking-widest mt-1">What do you currently own?</p>
+        {/* WELCOME PROTOCOL - Highly visible, interactive cards */}
+        <div className="mb-16 text-center max-w-3xl mx-auto">
+          <h2 className="font-serif text-4xl md:text-5xl text-stone-900 mb-8 font-medium">Welcome to Scentmix.</h2>
+          <div className="grid md:grid-cols-2 gap-6 text-left">
+            <div className="bg-white p-8 rounded-3xl shadow-lg shadow-stone-200/50 border border-stone-100 hover:-translate-y-1 transition-transform duration-300">
+              <div className="w-12 h-12 bg-stone-900 text-white rounded-full flex items-center justify-center font-bold text-xl mb-6 shadow-md">
+                01
               </div>
+              <p className="text-stone-600 leading-relaxed font-medium">
+                Add the fragrances you currently own. We will instantly show you which luxury designer scents you can recreate just by layering your existing bottles.
+              </p>
+            </div>
+            
+            <div className="bg-white p-8 rounded-3xl shadow-lg shadow-stone-200/50 border border-stone-100 hover:-translate-y-1 transition-transform duration-300">
+              <div className="w-12 h-12 bg-stone-900 text-white rounded-full flex items-center justify-center font-bold text-xl mb-6 shadow-md">
+                02
+              </div>
+              <p className="text-stone-600 leading-relaxed font-medium">
+                Input any designer scent you desire. We will cross-reference it against your collection and reveal the exact missing piece you need to acquire to complete the scent profile.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION 1: INVENTORY (Modern App Interface) */}
+        <div className="bg-white rounded-[2rem] shadow-xl shadow-stone-200/50 border border-stone-100 overflow-hidden mb-12">
+          <div className="bg-stone-900 text-white px-8 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <h3 className="font-serif text-2xl">Step 01: What do you own?</h3>
+            <button 
+              onClick={() => setScanModalOpen(true)}
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors"
+            >
+              <Camera className="w-4 h-4" />
+              Scan with Camera
+            </button>
+          </div>
+          
+          <div className="p-8 md:p-10">
+            {/* Interactive Search/Add Bar */}
+            <div className="relative flex items-center gap-3 mb-8">
+              <div className="relative flex-1">
+                <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
+                <input 
+                  type="text"
+                  value={customInput}
+                  onChange={(e) => setCustomInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && addBottle(customInput)}
+                  placeholder="Enter a fragrance name you own..."
+                  className="w-full bg-stone-50 border-2 border-stone-100 hover:border-stone-200 focus:border-stone-900 focus:bg-white rounded-2xl py-4 pl-12 pr-4 text-base text-stone-900 placeholder-stone-400 focus:outline-none transition-all outline-none"
+                />
+              </div>
+              <button 
+                onClick={() => addBottle(customInput)}
+                className="bg-stone-900 hover:bg-stone-800 text-white h-[56px] px-8 rounded-2xl font-bold transition-all shadow-md active:scale-95"
+              >
+                Add
+              </button>
             </div>
 
-            <div className="pl-0 md:pl-16">
-              <div className="flex flex-col md:flex-row gap-4 items-center justify-between border-b border-stone-100 pb-6 mb-6">
-                <div className="flex-1 w-full flex gap-4">
-                  <input 
-                    type="text"
-                    value={customInput}
-                    onChange={(e) => setCustomInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && addBottle(customInput)}
-                    placeholder="Enter a fragrance name..."
-                    className="flex-1 bg-transparent border-b border-stone-300 px-0 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:border-stone-900 transition-colors"
-                  />
-                  <button 
-                    onClick={() => addBottle(customInput)}
-                    className="bg-stone-900 hover:bg-stone-800 text-white px-6 py-2 text-[10px] uppercase tracking-widest font-semibold transition-colors"
-                  >
-                    Add
-                  </button>
-                </div>
-                <div className="flex items-center gap-4 w-full md:w-auto">
-                  <span className="text-stone-200 hidden md:block">|</span>
-                  <button 
-                    onClick={() => setScanModalOpen(true)}
-                    className="flex items-center gap-2 text-[11px] uppercase tracking-widest font-semibold text-stone-500 hover:text-stone-900 transition-colors"
-                  >
-                    <Camera className="w-4 h-4" strokeWidth={1.5} />
-                    Scan Shelf
-                  </button>
-                </div>
-              </div>
-
-              {/* Active Wardrobe */}
+            {/* Visual Inventory Badges */}
+            <div className="min-h-[120px] bg-stone-50 rounded-2xl border-2 border-dashed border-stone-200 p-6 flex flex-col justify-center mb-6">
               {myShelf.length > 0 ? (
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div className="flex flex-wrap gap-3">
                   {myShelf.map((b) => (
-                    <span key={b} className="group flex items-center justify-between gap-2 bg-stone-50 border border-stone-200 px-3 py-1.5 hover:border-stone-300 transition-colors">
-                      <span className="text-[11px] font-medium text-stone-700">{b}</span>
-                      <button onClick={() => removeBottle(b)} className="text-stone-400 hover:text-stone-900">
-                        <X className="w-3 h-3" strokeWidth={2} />
+                    <div key={b} className="bg-white border border-stone-200 shadow-sm rounded-full pl-4 pr-2 py-2 flex items-center gap-3 hover:border-stone-300 transition-colors animate-in zoom-in-95 duration-200">
+                      <span className="text-sm font-medium text-stone-700">{b}</span>
+                      <button onClick={() => removeBottle(b)} className="bg-stone-100 hover:bg-stone-200 text-stone-500 rounded-full p-1 transition-colors">
+                        <X className="w-4 h-4" />
                       </button>
-                    </span>
+                    </div>
                   ))}
                 </div>
               ) : (
-                <div className="py-8 text-center border border-dashed border-stone-200 bg-stone-50/50 mb-6">
-                  <p className="text-[10px] text-stone-400 uppercase tracking-widest">Inventory is empty</p>
-                </div>
+                <p className="text-stone-400 font-medium text-center">Your tray is empty. Add a bottle above to begin.</p>
               )}
+            </div>
 
-              {/* Quick Add */}
-              <div className="flex flex-wrap gap-2 items-center">
-                <span className="text-[10px] font-semibold text-stone-400 uppercase mr-2">Common:</span>
+            {/* Quick Add Chips */}
+            <div>
+              <p className="text-xs font-bold text-stone-400 uppercase tracking-wider mb-3 pl-2">Popular additions</p>
+              <div className="flex flex-wrap gap-2">
                 {POPULAR_SHELF_PRESETS.filter((p) => !myShelf.includes(p)).map((preset) => (
                   <button 
                     key={preset}
                     onClick={() => addBottle(preset)}
-                    className="text-[10px] uppercase tracking-wider bg-white border border-stone-200 text-stone-500 hover:border-stone-900 hover:text-stone-900 px-2 py-1 transition-all"
+                    className="bg-white border border-stone-200 text-stone-500 hover:border-stone-400 hover:text-stone-800 rounded-lg px-3 py-1.5 text-xs font-medium transition-all shadow-sm active:scale-95 flex items-center gap-1"
                   >
-                    + {preset}
+                    <Plus className="w-3 h-3" /> {preset}
                   </button>
                 ))}
               </div>
             </div>
           </div>
+        </div>
 
-          {/* STEP 02: AMBITION (The visually prominent core search) */}
-          <div className="p-8 md:p-12 relative z-10">
+        {/* SECTION 1B: INSTANT ALCHEMY (Dynamic Pop-up) */}
+        {myShelf.length >= 2 && (
+          <div className="mb-16 animate-in slide-in-from-bottom-8 fade-in duration-700">
+            <div className="flex items-center gap-3 mb-6">
+              <Sparkles className="w-6 h-6 text-amber-500" />
+              <h3 className="font-serif text-2xl text-stone-900">What you can recreate right now</h3>
+            </div>
             
-            {/* Animate down arrow to draw the eye */}
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-white px-2">
-              <ArrowDown className="w-5 h-5 text-stone-300" strokeWidth={1.5} />
-            </div>
-
-            <div className="flex flex-col items-center text-center mt-6 mb-10">
-              <span className="font-serif text-3xl md:text-4xl text-stone-300 mb-4 block">02</span>
-              <h2 className="font-serif text-4xl md:text-5xl font-light text-stone-900 leading-tight">
-                What do you want <br className="hidden md:block" />to smell like?
-              </h2>
-            </div>
-
-            <div className="px-0 md:px-16">
-              {/* Editorial Search Bar */}
-              <form onSubmit={handleTargetSearch} className="relative mb-8">
-                <input 
-                  type="text"
-                  value={targetSearchInput}
-                  onChange={(e) => setTargetSearchInput(e.target.value)}
-                  placeholder="Search target silhouette (e.g. Angels Share, Bleu de Chanel)..."
-                  className="w-full bg-transparent border-b-2 border-stone-200 py-4 pl-0 pr-12 text-lg md:text-xl font-serif text-stone-900 placeholder-stone-300 focus:outline-none focus:border-stone-900 transition-colors text-center md:text-left"
-                />
-                <button type="submit" className="absolute right-0 top-4 text-stone-400 hover:text-stone-900 transition-colors">
-                  <Search className="w-6 h-6" strokeWidth={1.5} />
-                </button>
-              </form>
-
-              {/* Quick Presets for Target */}
-              <div className="flex flex-wrap justify-center md:justify-start gap-2">
-                {BRIDGE_TARGET_DATABASE.map((t) => (
-                  <button
-                    key={t.name}
-                    type="button"
-                    onClick={() => {
-                      setTargetQuery(t.name);
-                      setTargetSearchInput(t.name);
-                      setTimeout(() => {
-                        document.getElementById('synthesis-results')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                      }, 100);
-                    }}
-                    className="text-[10px] uppercase tracking-wider border border-stone-200 text-stone-500 hover:border-stone-900 hover:text-stone-900 bg-white px-4 py-2 transition-all"
-                  >
-                    {t.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* STEP 03: SYNTHESIS RESULTS (Only appears when searched) */}
-          {calculatedBridgeData && (
-            <div id="synthesis-results" className="p-8 md:p-12 relative z-10 border-t border-stone-100 bg-stone-50 animate-in fade-in slide-in-from-top-4 duration-500">
-              
-              <div className="flex items-center gap-6 mb-8">
-                <span className="font-serif text-3xl md:text-4xl text-stone-300">03</span>
-                <div>
-                  <h2 className="font-serif text-2xl font-light text-stone-900">Synthesis Engine</h2>
-                  <p className="text-xs text-stone-400 uppercase tracking-widest mt-1">Bridging the gap</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Example Card 1 */}
+              <div className="bg-white rounded-3xl p-8 shadow-lg shadow-stone-200/50 border border-stone-100 flex flex-col h-full">
+                <div className="bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full w-max mb-4 border border-emerald-200">
+                  94% Match Found
                 </div>
-              </div>
-
-              <div className="pl-0 md:pl-16">
-                
-                {/* Target Overview */}
-                <div className="mb-10 pb-10 border-b border-stone-200">
-                  <span className="text-[10px] uppercase tracking-widest font-bold text-stone-400 block mb-2">Target Acquired: {calculatedBridgeData.target.house}</span>
-                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-                    <h3 className="font-serif text-3xl md:text-4xl text-stone-900">{calculatedBridgeData.target.name}</h3>
-                    <span className="text-sm font-medium text-stone-600">Retail: {calculatedBridgeData.target.retail}</span>
+                <h4 className="text-xl font-serif font-bold text-stone-900">Dior Sauvage Elixir</h4>
+                <p className="text-sm text-stone-500 mt-2 mb-6 flex-1">Spicy lavender with dark licorice and grapefruit core.</p>
+                <div className="bg-stone-50 rounded-2xl p-5 space-y-3">
+                  <div className="flex justify-between items-center border-b border-stone-200 pb-3">
+                    <span className="text-xs font-bold text-stone-400 uppercase tracking-wider">Base (2 Sprays)</span>
+                    <span className="text-sm font-semibold text-stone-800 text-right max-w-[60%]">Lattafa Asad</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-bold text-stone-400 uppercase tracking-wider">Top (1 Spray)</span>
+                    <span className="text-sm font-semibold text-stone-800 text-right max-w-[60%]">Bleu de Chanel EdP</span>
                   </div>
                 </div>
+              </div>
+              
+              {/* Example Card 2 */}
+              <div className="bg-white rounded-3xl p-8 shadow-lg shadow-stone-200/50 border border-stone-100 flex flex-col h-full">
+                <div className="bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full w-max mb-4 border border-emerald-200">
+                  91% Match Found
+                </div>
+                <h4 className="text-xl font-serif font-bold text-stone-900">Tom Ford Tobacco Vanille</h4>
+                <p className="text-sm text-stone-500 mt-2 mb-6 flex-1">Cured pipe tobacco, smoky wood hearth, and sweet tonka.</p>
+                <div className="bg-stone-50 rounded-2xl p-5 space-y-3">
+                  <div className="flex justify-between items-center border-b border-stone-200 pb-3">
+                    <span className="text-xs font-bold text-stone-400 uppercase tracking-wider">Base (1 Spray)</span>
+                    <span className="text-sm font-semibold text-stone-800 text-right max-w-[60%]">By the Fireplace</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-bold text-stone-400 uppercase tracking-wider">Top (2 Sprays)</span>
+                    <span className="text-sm font-semibold text-stone-800 text-right max-w-[60%]">Zara Warm Black</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
+        {/* SECTION 2: THE BRIDGE ENGINE (Highly distinct visual zone) */}
+        <div className="bg-stone-100 rounded-[2.5rem] p-6 md:p-12 shadow-inner border border-stone-200">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <span className="inline-flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-sm mb-6">
+              <ArrowDown className="w-6 h-6 text-stone-400" />
+            </span>
+            <h2 className="font-serif text-3xl md:text-4xl text-stone-900 font-medium mb-4">Step 02: What do you want to smell like?</h2>
+            <p className="text-stone-500 font-medium">Search for your desired scent below.</p>
+          </div>
+
+          <form onSubmit={handleTargetSearch} className="max-w-2xl mx-auto relative mb-8">
+            <Search className="w-6 h-6 absolute left-6 top-1/2 -translate-y-1/2 text-stone-400" />
+            <input 
+              type="text"
+              value={targetSearchInput}
+              onChange={(e) => setTargetSearchInput(e.target.value)}
+              placeholder="Input any designer scent you desire..."
+              className="w-full bg-white border-2 border-stone-200 hover:border-stone-300 focus:border-stone-900 rounded-3xl py-5 pl-16 pr-16 text-lg font-serif text-stone-900 placeholder-stone-400 focus:outline-none transition-all shadow-xl shadow-stone-200/50"
+            />
+            <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 bg-stone-900 hover:bg-stone-800 text-white p-3 rounded-full transition-transform active:scale-95">
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </form>
+
+          {/* Target Presets */}
+          <div className="flex flex-wrap justify-center gap-2 mb-8 max-w-3xl mx-auto">
+            {BRIDGE_TARGET_DATABASE.map((t) => (
+              <button
+                key={t.name}
+                type="button"
+                onClick={() => {
+                  setTargetQuery(t.name);
+                  setTargetSearchInput(t.name);
+                  setTimeout(() => {
+                    document.getElementById('synthesis-results')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }, 100);
+                }}
+                className="bg-white border border-stone-200 text-stone-600 hover:border-stone-400 hover:text-stone-900 rounded-xl px-4 py-2 text-xs font-semibold shadow-sm transition-all active:scale-95"
+              >
+                {t.name}
+              </button>
+            ))}
+          </div>
+
+          {/* ENGINE RESULTS */}
+          <div id="synthesis-results">
+            {calculatedBridgeData && (
+              <div className="animate-in fade-in zoom-in-95 duration-500 max-w-4xl mx-auto mt-12">
+                
                 {calculatedBridgeData.bridge ? (
-                  /* User owns a bridge base */
-                  <div>
-                    <div className="flex items-center justify-between mb-6">
-                      <div>
-                        <h4 className="font-serif text-2xl text-stone-900 mb-1">Blueprint Complete</h4>
-                        <p className="text-sm text-stone-500">You already possess {calculatedBridgeData.bridge.ownedCoverage} of this profile.</p>
+                  /* SUCCESS ROUTE (Bridge Found) */
+                  <div className="bg-white rounded-3xl overflow-hidden shadow-2xl shadow-stone-300/50 border border-stone-200">
+                    
+                    {/* Header */}
+                    <div className="bg-stone-900 text-white p-8 md:p-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative overflow-hidden">
+                      <div className="relative z-10">
+                        <span className="text-stone-400 text-xs font-bold uppercase tracking-wider mb-2 block">Target Acquired</span>
+                        <h3 className="font-serif text-3xl md:text-4xl">{calculatedBridgeData.target.name}</h3>
                       </div>
-                      <span className="hidden md:inline-block bg-stone-900 text-white text-[10px] uppercase tracking-widest font-bold px-3 py-1">
-                        {calculatedBridgeData.bridge.targetMatch} Match
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
-                      {/* Connecting Line (Desktop) */}
-                      <div className="hidden md:block absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-6 border-t border-dashed border-stone-300 z-0"></div>
-
-                      {/* Owned Box */}
-                      <div className="bg-white border border-stone-200 p-6 relative z-10">
-                        <span className="text-[10px] uppercase tracking-widest font-bold text-stone-400 block mb-3">Foundation (Owned)</span>
-                        <h5 className="font-serif text-lg text-stone-900 mb-2">{calculatedBridgeData.bridge.matchingShelfBottle}</h5>
-                        <p className="text-xs text-stone-500">{calculatedBridgeData.bridge.ownedRole}</p>
-                      </div>
-
-                      {/* Missing Link Box */}
-                      <div className="bg-stone-100 border border-stone-200 p-6 relative z-10">
-                        <span className="text-[10px] uppercase tracking-widest font-bold text-stone-900 block mb-3">Missing Element (Required)</span>
-                        <h5 className="font-serif text-lg text-stone-900 mb-2">{calculatedBridgeData.bridge.missingPieceName}</h5>
-                        <p className="text-xs text-stone-500 mb-6">{calculatedBridgeData.bridge.missingRole}</p>
-                        
-                        {/* CRITICAL MONETIZATION CTA - STARK BLACK */}
-                        <button className="w-full bg-stone-900 hover:bg-stone-800 text-white flex items-center justify-center gap-2 px-6 py-3 text-[10px] uppercase tracking-widest font-bold transition-all shadow-md">
-                          <ShoppingBag className="w-3.5 h-3.5" strokeWidth={2} />
-                          Acquire Element • {calculatedBridgeData.bridge.missingPrice}
-                        </button>
+                      <div className="relative z-10 bg-white/10 backdrop-blur-md rounded-2xl p-4 text-right">
+                        <span className="block text-[10px] uppercase tracking-widest text-stone-300 mb-1">Retail</span>
+                        <span className="text-xl font-light">{calculatedBridgeData.target.retail}</span>
                       </div>
                     </div>
 
-                    {/* Application Protocol */}
-                    <div className="mt-8 pt-6 border-t border-stone-200">
-                      <span className="text-[10px] uppercase tracking-widest font-bold text-stone-400 block mb-2">Application Protocol</span>
-                      <p className="text-sm text-stone-800 leading-relaxed font-serif italic">
-                        &quot;{calculatedBridgeData.bridge.recipe}&quot;
-                      </p>
+                    <div className="p-8 md:p-10">
+                      <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-100 text-emerald-800 px-4 py-3 rounded-xl mb-8 w-max">
+                        <Check className="w-5 h-5 text-emerald-600" strokeWidth={2.5}/>
+                        <span className="font-bold">{calculatedBridgeData.bridge.targetMatch} Match Possible</span>
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-6 relative">
+                        {/* Box 1: Owned */}
+                        <div className="bg-stone-50 rounded-2xl p-6 border border-stone-200">
+                          <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest block mb-4">Foundation (From Inventory)</span>
+                          <h5 className="font-serif text-2xl text-stone-900 mb-2">{calculatedBridgeData.bridge.matchingShelfBottle}</h5>
+                          <p className="text-sm text-stone-600">{calculatedBridgeData.bridge.ownedRole}</p>
+                        </div>
+
+                        {/* Box 2: Missing Link (The Monetization CTA) */}
+                        <div className="bg-white rounded-2xl p-6 border-2 border-stone-900 shadow-xl relative transform md:-translate-y-2">
+                          <div className="absolute -top-3 left-6 bg-stone-900 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
+                            Missing Element
+                          </div>
+                          <h5 className="font-serif text-2xl text-stone-900 mt-2 mb-2">{calculatedBridgeData.bridge.missingPieceName}</h5>
+                          <p className="text-sm text-stone-600 mb-6">{calculatedBridgeData.bridge.missingRole}</p>
+                          
+                          {/* BIG INTERACTIVE CTA BUTTON */}
+                          <button className="w-full bg-stone-900 hover:bg-stone-800 text-white rounded-xl py-4 flex items-center justify-center gap-2 font-bold transition-all shadow-lg active:scale-95">
+                            <ShoppingBag className="w-5 h-5" />
+                            Acquire Element • {calculatedBridgeData.bridge.missingPrice}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="mt-8 bg-stone-50 rounded-2xl p-6 text-center border border-stone-200">
+                        <span className="text-[10px] uppercase tracking-widest font-bold text-stone-400 block mb-3">Application Protocol</span>
+                        <p className="text-base text-stone-800 font-serif italic">
+                          &quot;{calculatedBridgeData.bridge.recipe}&quot;
+                        </p>
+                      </div>
                     </div>
                   </div>
                 ) : (
-                  /* User owns nothing relevant - Show Solo Clone CTA */
-                  <div className="text-center">
-                    <span className="text-[10px] uppercase tracking-widest font-bold text-stone-400 block mb-2">Standard Alternative</span>
-                    <h4 className="font-serif text-2xl text-stone-900 mb-3">{calculatedBridgeData.target.defaultSoloClone.name}</h4>
-                    <p className="text-sm text-stone-500 max-w-md mx-auto leading-relaxed mb-8">
+                  /* FALLBACK ROUTE (Solo Clone) */
+                  <div className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl shadow-stone-300/50 border border-stone-200 text-center relative overflow-hidden">
+                    <div className="absolute top-0 inset-x-0 h-2 bg-stone-900"></div>
+                    <span className="text-xs font-bold text-stone-400 uppercase tracking-widest block mb-4">Standard Alternative</span>
+                    <h4 className="font-serif text-4xl text-stone-900 mb-4">{calculatedBridgeData.target.defaultSoloClone.name}</h4>
+                    <p className="text-base text-stone-600 max-w-xl mx-auto leading-relaxed mb-8">
                       {calculatedBridgeData.target.defaultSoloClone.desc}
                     </p>
                     
-                    {/* CRITICAL MONETIZATION CTA */}
-                    <button className="bg-stone-900 hover:bg-stone-800 text-white flex items-center justify-center gap-2 px-8 py-4 w-full md:w-auto mx-auto text-[11px] uppercase tracking-widest font-bold transition-all shadow-md">
-                      <ShoppingBag className="w-4 h-4" />
+                    <button className="mx-auto bg-stone-900 hover:bg-stone-800 text-white rounded-2xl px-8 py-5 flex items-center justify-center gap-3 font-bold text-lg transition-all shadow-xl active:scale-95 hover:shadow-2xl">
+                      <ShoppingBag className="w-5 h-5" />
                       Acquire 1-Bottle Clone • {calculatedBridgeData.target.defaultSoloClone.price}
                     </button>
-                    <p className="text-[10px] text-stone-400 uppercase tracking-widest mt-6">
-                      Want to unlock 95% fidelity? Ensure your entire collection is logged above to check for synergistic bridges.
+                    
+                    <p className="text-xs text-stone-400 font-semibold uppercase tracking-wide mt-8">
+                      Want to unlock 95% fidelity? Ensure your entire collection is logged above.
                     </p>
                   </div>
                 )}
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </main>
 
-      {/* Luxury Minimalist Scanner Modal */}
+      {/* Modern Scanner Modal */}
       {scanModalOpen && (
-        <div className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white border border-stone-200 shadow-2xl max-w-lg w-full p-8 md:p-12 relative animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8 relative animate-in fade-in zoom-in-95 duration-200">
             <button 
               onClick={() => { setScanModalOpen(false); setScanStep('upload'); }}
-              className="absolute top-6 right-6 text-stone-400 hover:text-stone-900 transition-colors"
+              className="absolute top-6 right-6 text-stone-400 hover:bg-stone-100 hover:text-stone-900 p-2 rounded-full transition-colors"
             >
-              <X className="w-5 h-5" strokeWidth={1.5} />
+              <X className="w-5 h-5" />
             </button>
 
-            <h3 className="font-serif text-2xl font-light text-stone-900 mb-2">Scan Inventory</h3>
+            <h3 className="font-serif text-2xl font-bold text-stone-900 mb-6">Scan Inventory</h3>
             
             {scanStep === 'upload' && (
-              <div className="mt-8 space-y-6">
+              <div className="space-y-6">
                 <div 
                   onClick={() => fileInputRef.current?.click()}
-                  className="border border-stone-300 hover:border-stone-900 p-12 text-center cursor-pointer bg-stone-50 transition-colors group"
+                  className="border-2 border-dashed border-stone-200 hover:border-stone-900 rounded-2xl p-12 text-center cursor-pointer bg-stone-50 transition-colors group"
                 >
-                  <Camera className="w-6 h-6 text-stone-300 group-hover:text-stone-900 mx-auto mb-4 transition-colors" strokeWidth={1.5} />
-                  <p className="text-xs uppercase tracking-widest font-semibold text-stone-900">Capture Collection</p>
-                  <p className="text-[11px] text-stone-500 mt-2">Upload a photograph of your bottles</p>
+                  <Camera className="w-8 h-8 text-stone-400 group-hover:text-stone-900 mx-auto mb-4 transition-colors" />
+                  <p className="text-sm font-bold text-stone-900">Capture Collection</p>
+                  <p className="text-xs text-stone-500 mt-2">Upload a photograph of your bottles</p>
                   <input 
                     ref={fileInputRef}
                     type="file" 
@@ -501,13 +538,13 @@ export default function ScentAlchemistApp() {
 
                 <div className="flex items-center justify-center gap-4">
                   <div className="h-px bg-stone-200 flex-1"></div>
-                  <span className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold">or</span>
+                  <span className="text-xs text-stone-400 font-bold uppercase">or</span>
                   <div className="h-px bg-stone-200 flex-1"></div>
                 </div>
 
                 <button 
                   onClick={simulatedScan}
-                  className="w-full bg-stone-100 hover:bg-stone-200 text-stone-900 px-6 py-4 text-[10px] uppercase tracking-widest font-semibold transition-colors"
+                  className="w-full bg-stone-100 hover:bg-stone-200 text-stone-900 rounded-xl px-6 py-4 text-sm font-bold transition-colors"
                 >
                   Run Demo Calibration
                 </button>
@@ -515,60 +552,60 @@ export default function ScentAlchemistApp() {
             )}
 
             {scanStep === 'processing' && (
-              <div className="my-16 text-center">
-                <Loader2 className="w-8 h-8 text-stone-900 animate-spin mx-auto mb-6" strokeWidth={1.5} />
-                <p className="text-[10px] uppercase tracking-widest font-semibold text-stone-900">Analyzing Labels &amp; Silhouettes</p>
+              <div className="py-16 text-center">
+                <Loader2 className="w-10 h-10 text-stone-900 animate-spin mx-auto mb-6" />
+                <p className="text-sm font-bold text-stone-900 uppercase tracking-wider">Analyzing Image...</p>
               </div>
             )}
 
             {scanStep === 'review' && (
-              <div className="mt-8 space-y-6">
-                <p className="text-xs text-stone-500 font-light">
-                  Please verify the algorithmic detection below. Adjust nomenclature if necessary.
+              <div className="space-y-6">
+                <p className="text-sm text-stone-600 font-medium">
+                  Review the detected bottles below.
                 </p>
 
                 <div className="space-y-3 max-h-56 overflow-y-auto pr-2">
                   {detectedBottles.map((b, idx) => (
-                    <div key={idx} className="flex items-center gap-3 border-b border-stone-200 pb-2">
+                    <div key={idx} className="flex items-center gap-3 bg-stone-50 p-3 rounded-xl border border-stone-100">
                       <input 
                         type="text"
                         value={b.name}
                         onChange={(e) => updateDetected(idx, e.target.value)}
-                        className="flex-1 bg-transparent text-sm font-serif text-stone-900 focus:outline-none focus:border-stone-900"
+                        className="flex-1 bg-transparent text-sm font-semibold text-stone-900 focus:outline-none"
                       />
-                      <span className="text-[10px] text-stone-400 uppercase tracking-widest">
+                      <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">
                         {b.confidence}%
                       </span>
                       <button 
                         onClick={() => removeDetected(idx)}
-                        className="text-stone-300 hover:text-stone-900 transition-colors"
+                        className="text-stone-400 hover:text-red-500 transition-colors p-1"
                       >
-                        <Trash2 className="w-4 h-4" strokeWidth={1.5} />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   ))}
                 </div>
 
-                <div className="pt-4 flex gap-3">
+                <div className="flex gap-3">
                   <input 
                     type="text"
                     value={newManualBottle}
                     onChange={(e) => setNewManualBottle(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && addManualToDetected()}
                     placeholder="Add missing item..."
-                    className="flex-1 bg-transparent border-b border-stone-300 px-0 py-2 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:border-stone-900"
+                    className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm text-stone-900 focus:outline-none focus:border-stone-900"
                   />
                   <button 
                     onClick={addManualToDetected}
-                    className="text-stone-900 hover:text-stone-600 p-2"
+                    className="bg-stone-900 text-white rounded-xl px-4 flex items-center justify-center hover:bg-stone-800 transition-colors"
                   >
-                    <Plus className="w-5 h-5" strokeWidth={1.5} />
+                    <Plus className="w-5 h-5" />
                   </button>
                 </div>
 
                 <button 
                   onClick={confirmDetected}
-                  className="w-full bg-stone-900 hover:bg-stone-800 text-white px-6 py-4 text-[10px] uppercase tracking-widest font-semibold transition-colors mt-4"
+                  className="w-full bg-stone-900 hover:bg-stone-800 text-white rounded-xl px-6 py-4 text-sm font-bold transition-all active:scale-95 shadow-lg mt-2"
                 >
                   Import Inventory ({detectedBottles.length})
                 </button>
