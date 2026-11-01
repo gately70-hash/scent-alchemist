@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { 
   Search, Camera, X, Loader2, 
-  Trash2, Plus, ShoppingBag, ArrowDown, Sparkles, Layers, ArrowRight, Check 
+  Trash2, Plus, ShoppingBag, ArrowDown, Sparkles, Layers, ArrowRight, Check, FlaskConical 
 } from 'lucide-react';
 
 const POPULAR_SHELF_PRESETS = [
@@ -30,7 +30,7 @@ const BRIDGE_TARGET_DATABASE = [
         missingPrice: "£18",
         missingRole: "Creamy resinous sandalwood & dense woody base",
         targetMatch: "96%",
-        recipe: "Apply 2 sprays of Bleu de Chanel EdP, wait 45s, then overlay 1 spray of the sandalwood base to anchor the citrus into a rich pure Parfum drydown."
+        recipe: "Apply 2 sprays of your Bleu de Chanel EdP, wait 45s, then overlay 1 spray of your new sandalwood base to anchor the citrus into a rich pure Parfum drydown."
       },
       {
         matchingShelfBottle: "Versace Dylan Blue",
@@ -40,7 +40,7 @@ const BRIDGE_TARGET_DATABASE = [
         missingPrice: "£22",
         missingRole: "Dry cedarwood, tonka & warm resinous anchor",
         targetMatch: "91%",
-        recipe: "Layer 2 sprays of Dylan Blue over 1 spray of warm dry cedar to dial back the sweet aquatic notes into refined Chanel woods."
+        recipe: "Layer 2 sprays of your Dylan Blue over 1 spray of your new warm dry cedar to dial back the sweet aquatic notes into refined Chanel woods."
       }
     ],
     defaultSoloClone: {
@@ -64,7 +64,7 @@ const BRIDGE_TARGET_DATABASE = [
         missingPrice: "£22",
         missingRole: "Dry boozy cognac oak & powdery iris",
         targetMatch: "95%",
-        recipe: "Spray 2 sprays of Khamrah, wait 45s, then overlay 1 spray of Zara Sand Desert to cut the syrupy sweetness into charred boozy oak barrels."
+        recipe: "Spray 2 sprays of your Khamrah, wait 45s, then overlay 1 spray of your new Zara Sand Desert to cut the syrupy sweetness into charred boozy oak barrels."
       },
       {
         matchingShelfBottle: "Zara Warm Black",
@@ -74,7 +74,7 @@ const BRIDGE_TARGET_DATABASE = [
         missingPrice: "£24",
         missingRole: "Praline, heavy cinnamon, and rich boozy notes",
         targetMatch: "90%",
-        recipe: "Layer 2 sprays of a heavy praline clone over 1 spray of Zara Warm Black for a dense holiday gourmand sillage."
+        recipe: "Layer 2 sprays of your new heavy praline clone over 1 spray of your Zara Warm Black for a dense holiday gourmand sillage."
       }
     ],
     defaultSoloClone: {
@@ -98,7 +98,7 @@ const BRIDGE_TARGET_DATABASE = [
         missingPrice: "£22",
         missingRole: "Dark cardamom, cinnamon spice & warm amber warmth",
         targetMatch: "94%",
-        recipe: "Apply 2 sprays of CDNIM, then add 1 spray of Lattafa Asad directly over it to turn classic smoky Aventus into the limited spiced Absolu edition."
+        recipe: "Apply 2 sprays of your CDNIM, then add 1 spray of your new Lattafa Asad directly over it to turn classic smoky Aventus into the limited spiced Absolu edition."
       }
     ],
     defaultSoloClone: {
@@ -215,22 +215,30 @@ export default function ScentAlchemistApp() {
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 font-sans selection:bg-amber-200 selection:text-stone-900 pb-24">
       
-      {/* Interactive Floating Header */}
+      {/* Interactive Floating Header - NEW EXCITING BRANDING */}
       <header className="sticky top-0 z-40 px-4 py-4 md:px-8">
-        <div className="max-w-6xl mx-auto bg-white/80 backdrop-blur-lg border border-stone-200/50 shadow-sm rounded-2xl px-6 py-4 flex items-center justify-between transition-all">
-          <h1 className="font-serif text-2xl font-bold tracking-wider text-stone-900">
-            Scentmix
-          </h1>
-          <div className="flex items-center gap-3 bg-stone-100 px-4 py-2 rounded-full text-xs font-semibold text-stone-600 shadow-inner">
+        <div className="max-w-6xl mx-auto bg-white/80 backdrop-blur-lg border border-stone-200/50 shadow-sm rounded-3xl px-6 py-4 flex items-center justify-between transition-all">
+          
+          {/* Upgraded Logo Lockup */}
+          <div className="flex items-center gap-4 hover:opacity-90 transition-opacity cursor-default">
+            <div className="bg-stone-900 text-amber-400 p-2.5 rounded-xl shadow-md flex items-center justify-center">
+              <Sparkles className="w-6 h-6" strokeWidth={2} />
+            </div>
+            <h1 className="font-serif text-3xl md:text-4xl font-black tracking-[0.15em] uppercase text-transparent bg-clip-text bg-gradient-to-br from-stone-900 via-stone-700 to-stone-400">
+              Scentmix
+            </h1>
+          </div>
+
+          <div className="flex items-center gap-3 bg-stone-100 px-4 py-2 rounded-full text-xs font-bold text-stone-600 shadow-inner">
             <Layers className="w-4 h-4 text-stone-500" />
-            Inventory ({myShelf.length})
+            <span className="hidden md:inline">Inventory</span> ({myShelf.length})
           </div>
         </div>
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 mt-8">
         
-        {/* WELCOME PROTOCOL - Highly visible, interactive cards */}
+        {/* WELCOME PROTOCOL */}
         <div className="mb-16 text-center max-w-3xl mx-auto">
           <h2 className="font-serif text-4xl md:text-5xl text-stone-900 mb-8 font-medium">Welcome to Scentmix.</h2>
           <div className="grid md:grid-cols-2 gap-6 text-left">
@@ -334,7 +342,6 @@ export default function ScentAlchemistApp() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Example Card 1 */}
               <div className="bg-white rounded-3xl p-8 shadow-lg shadow-stone-200/50 border border-stone-100 flex flex-col h-full">
                 <div className="bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full w-max mb-4 border border-emerald-200">
                   94% Match Found
@@ -353,7 +360,6 @@ export default function ScentAlchemistApp() {
                 </div>
               </div>
               
-              {/* Example Card 2 */}
               <div className="bg-white rounded-3xl p-8 shadow-lg shadow-stone-200/50 border border-stone-100 flex flex-col h-full">
                 <div className="bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full w-max mb-4 border border-emerald-200">
                   91% Match Found
@@ -375,7 +381,7 @@ export default function ScentAlchemistApp() {
           </div>
         )}
 
-        {/* SECTION 2: THE BRIDGE ENGINE (Highly distinct visual zone) */}
+        {/* SECTION 2: THE BRIDGE ENGINE */}
         <div className="bg-stone-100 rounded-[2.5rem] p-6 md:p-12 shadow-inner border border-stone-200">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <span className="inline-flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-sm mb-6">
@@ -399,7 +405,6 @@ export default function ScentAlchemistApp() {
             </button>
           </form>
 
-          {/* Target Presets */}
           <div className="flex flex-wrap justify-center gap-2 mb-8 max-w-3xl mx-auto">
             {BRIDGE_TARGET_DATABASE.map((t) => (
               <button
@@ -428,7 +433,6 @@ export default function ScentAlchemistApp() {
                   /* SUCCESS ROUTE (Bridge Found) */
                   <div className="bg-white rounded-3xl overflow-hidden shadow-2xl shadow-stone-300/50 border border-stone-200">
                     
-                    {/* Header */}
                     <div className="bg-stone-900 text-white p-8 md:p-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative overflow-hidden">
                       <div className="relative z-10">
                         <span className="text-stone-400 text-xs font-bold uppercase tracking-wider mb-2 block">Target Acquired</span>
@@ -442,40 +446,51 @@ export default function ScentAlchemistApp() {
 
                     <div className="p-8 md:p-10">
                       <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-100 text-emerald-800 px-4 py-3 rounded-xl mb-8 w-max">
-                        <Check className="w-5 h-5 text-emerald-600" />
+                        <Check className="w-5 h-5 text-emerald-600" strokeWidth={2.5}/>
                         <span className="font-bold">{calculatedBridgeData.bridge.targetMatch} Match Possible</span>
                       </div>
 
-                      <div className="grid md:grid-cols-2 gap-6 relative">
+                      {/* THE VISUAL EQUATION */}
+                      <div className="flex flex-col md:flex-row items-stretch justify-center gap-4 relative mb-8">
+                        
                         {/* Box 1: Owned */}
-                        <div className="bg-stone-50 rounded-2xl p-6 border border-stone-200">
-                          <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest block mb-4">Foundation (From Inventory)</span>
+                        <div className="flex-1 bg-stone-50 rounded-2xl p-6 border border-stone-200 flex flex-col justify-center">
+                          <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest block mb-2">01. You Already Own</span>
                           <h5 className="font-serif text-2xl text-stone-900 mb-2">{calculatedBridgeData.bridge.matchingShelfBottle}</h5>
                           <p className="text-sm text-stone-600">{calculatedBridgeData.bridge.ownedRole}</p>
                         </div>
 
-                        {/* Box 2: Missing Link (The Monetization CTA) */}
-                        <div className="bg-white rounded-2xl p-6 border-2 border-stone-900 shadow-xl relative transform md:-translate-y-2">
-                          <div className="absolute -top-3 left-6 bg-stone-900 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
-                            Missing Element
+                        {/* Plus Icon Connecting Them */}
+                        <div className="flex items-center justify-center -my-3 md:my-0 md:-mx-3 relative z-20">
+                          <div className="bg-stone-900 text-white p-3 rounded-full shadow-lg border-4 border-white">
+                            <Plus className="w-6 h-6" />
                           </div>
-                          <h5 className="font-serif text-2xl text-stone-900 mt-2 mb-2">{calculatedBridgeData.bridge.missingPieceName}</h5>
-                          <p className="text-sm text-stone-600 mb-6">{calculatedBridgeData.bridge.missingRole}</p>
-                          
-                          {/* BIG INTERACTIVE CTA BUTTON */}
-                          <button className="w-full bg-stone-900 hover:bg-stone-800 text-white rounded-xl py-4 flex items-center justify-center gap-2 font-bold transition-all shadow-lg active:scale-95">
-                            <ShoppingBag className="w-5 h-5" />
-                            Acquire Element • {calculatedBridgeData.bridge.missingPrice}
-                          </button>
+                        </div>
+
+                        {/* Box 2: Missing Link */}
+                        <div className="flex-1 bg-white rounded-2xl p-6 border-2 border-stone-900 shadow-xl relative flex flex-col justify-center">
+                          <span className="text-[10px] font-bold text-stone-900 uppercase tracking-widest block mb-2">02. Missing Element</span>
+                          <h5 className="font-serif text-2xl text-stone-900 mb-2">{calculatedBridgeData.bridge.missingPieceName}</h5>
+                          <p className="text-sm text-stone-600">{calculatedBridgeData.bridge.missingRole}</p>
                         </div>
                       </div>
 
-                      <div className="mt-8 bg-stone-50 rounded-2xl p-6 text-center border border-stone-200">
-                        <span className="text-[10px] uppercase tracking-widest font-bold text-stone-400 block mb-3">Application Protocol</span>
-                        <p className="text-base text-stone-800 font-serif italic">
-                          &quot;{calculatedBridgeData.bridge.recipe}&quot;
+                      {/* THE EXPLICIT PROTOCOL */}
+                      <div className="bg-stone-50 rounded-2xl p-6 md:p-8 border border-stone-200 mb-8">
+                        <div className="flex items-center gap-3 mb-3">
+                          <FlaskConical className="w-5 h-5 text-stone-400" />
+                          <h4 className="font-serif text-xl font-bold text-stone-900">The Synthesis Protocol</h4>
+                        </div>
+                        <p className="text-base md:text-lg text-stone-700 leading-relaxed font-serif italic">
+                          "{calculatedBridgeData.bridge.recipe}"
                         </p>
                       </div>
+
+                      {/* BIG MONETIZATION CTA */}
+                      <button className="w-full bg-stone-900 hover:bg-stone-800 text-white rounded-2xl py-5 flex items-center justify-center gap-3 font-bold text-lg transition-all shadow-xl active:scale-95">
+                        <ShoppingBag className="w-5 h-5" />
+                        Acquire Missing Element • {calculatedBridgeData.bridge.missingPrice}
+                      </button>
                     </div>
                   </div>
                 ) : (
