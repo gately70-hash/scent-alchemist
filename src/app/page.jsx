@@ -5,7 +5,7 @@ import {
   Sparkles, Layers, Search, FlaskConical, AlertCircle, 
   HelpCircle, CheckCircle2, ChevronRight, Zap, RefreshCw, 
   ArrowRight, ShieldCheck, Flame, Info, ExternalLink,
-  Camera, Upload, X, Loader2, Sparkle
+  Camera, Upload, X, Loader2, Trash2, Edit3, Plus, RotateCcw
 } from 'lucide-react';
 
 const POPULAR_SHELF_PRESETS = [
@@ -109,19 +109,15 @@ const TARGET_PRESETS = [
 
 export default function ScentAlchemistApp() {
   const [activeTab, setActiveTab] = useState('shelf');
-  const [myShelf, setMyShelf] = useState([
-    "Bleu de Chanel EdP",
-    "Lattafa Asad",
-    "Armaf Club de Nuit Intense Man",
-    "Maison Margiela By the Fireplace",
-    "Zara Warm Black"
-  ]);
+  // Starts completely clean for new visitors
+  const [myShelf, setMyShelf] = useState([]);
   const [customInput, setCustomInput] = useState("");
   const [targetQuery, setTargetQuery] = useState("Angels' Share");
   const [isScanning, setIsScanning] = useState(false);
   const [scanModalOpen, setScanModalOpen] = useState(false);
   const [detectedBottles, setDetectedBottles] = useState([]);
   const [scanStep, setScanStep] = useState('upload');
+  const [newManualBottle, setNewManualBottle] = useState("");
   const fileInputRef = useRef(null);
 
   const addBottle = (name) => {
@@ -134,6 +130,27 @@ export default function ScentAlchemistApp() {
 
   const removeBottle = (name) => {
     setMyShelf(myShelf.filter(item => item !== name));
+  };
+
+  const clearEntireShelf = () => {
+    setMyShelf([]);
+  };
+
+  const updateDetectedBottleName = (index, newName) => {
+    const updated = [...detectedBottles];
+    updated[index].name = newName;
+    setDetectedBottles(updated);
+  };
+
+  const removeDetectedBottle = (index) => {
+    setDetectedBottles(detectedBottles.filter((_, i) => i !== index));
+  };
+
+  const addManualToDetected = () => {
+    if (newManualBottle.trim()) {
+      setDetectedBottles([...detectedBottles, { name: newManualBottle.trim(), confidence: 100 }]);
+      setNewManualBottle("");
+    }
   };
 
   const currentTargetData = useMemo(() => {
@@ -150,13 +167,13 @@ export default function ScentAlchemistApp() {
     setTimeout(() => {
       setIsScanning(false);
       setDetectedBottles([
-        { name: "Tom Ford Noir Extreme", confidence: 96, label: "TF Noir Ext" },
-        { name: "Lattafa Khamrah", confidence: 94, label: "Khamrah Gold" },
-        { name: "Dior Sauvage EdT", confidence: 98, label: "Sauvage Dior" },
-        { name: "Versace Eros EdT", confidence: 89, label: "Eros Pour Homme" }
+        { name: "Tom Ford Noir Extreme", confidence: 96 },
+        { name: "Lattafa Khamrah", confidence: 94 },
+        { name: "Dior Sauvage EdT", confidence: 98 },
+        { name: "Versace Eros EdT", confidence: 89 }
       ]);
       setScanStep('review');
-    }, 2400);
+    }, 2000);
   };
 
   const handleFileUpload = (e) => {
@@ -168,7 +185,10 @@ export default function ScentAlchemistApp() {
   const confirmDetectedBottles = () => {
     const updated = [...myShelf];
     detectedBottles.forEach(b => {
-      if (!updated.includes(b.name)) updated.push(b.name);
+      const cleanName = b.name.trim();
+      if (cleanName && !updated.includes(cleanName)) {
+        updated.push(cleanName);
+      }
     });
     setMyShelf(updated);
     setScanModalOpen(false);
@@ -236,13 +256,26 @@ export default function ScentAlchemistApp() {
                   </p>
                 </div>
 
-                <button 
-                  onClick={() => setScanModalOpen(true)}
-                  className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-neutral-950 font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-amber-500/20 transition-all text-xs tracking-wide"
-                >
-                  <Camera className="w-4 h-4" />
-                  Scan Shelf with Photo / Camera
-                </button>
+                <div className="flex items-center gap-2">
+                  {myShelf.length > 0 && (
+                    <button 
+                      onClick={clearEntireShelf}
+                      className="inline-flex items-center gap-1.5 bg-neutral-950 border border-neutral-800 hover:border-red-500/50 hover:text-red-400 text-neutral-400 px-3 py-2 rounded-xl text-xs transition-colors"
+                      title="Clear shelf"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      Clear Tray
+                    </button>
+                  )}
+
+                  <button 
+                    onClick={() => setScanModalOpen(true)}
+                    className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-neutral-950 font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-amber-500/20 transition-all text-xs tracking-wide"
+                  >
+                    <Camera className="w-4 h-4" />
+                    Scan Shelf with Photo / Camera
+                  </button>
+                </div>
               </div>
 
               {/* Input Bar */}
@@ -263,27 +296,35 @@ export default function ScentAlchemistApp() {
                 </button>
               </div>
 
-              {/* Current Active Tags */}
-              <div className="mt-4 flex flex-wrap gap-2">
-                {myShelf.map((bottle) => (
-                  <span 
-                    key={bottle}
-                    className="inline-flex items-center gap-1.5 bg-neutral-950/90 border border-neutral-800 text-neutral-300 text-xs px-3 py-1.5 rounded-lg group"
-                  >
-                    <span>{bottle}</span>
-                    <button 
-                      onClick={() => removeBottle(bottle)}
-                      className="text-neutral-500 hover:text-red-400 transition-colors"
+              {/* Active Shelf Bottles Display */}
+              {myShelf.length > 0 ? (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {myShelf.map((bottle) => (
+                    <span 
+                      key={bottle}
+                      className="inline-flex items-center gap-1.5 bg-neutral-950/90 border border-neutral-800 text-neutral-300 text-xs px-3 py-1.5 rounded-lg group"
                     >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </span>
-                ))}
-              </div>
+                      <span>{bottle}</span>
+                      <button 
+                        onClick={() => removeBottle(bottle)}
+                        className="text-neutral-500 hover:text-red-400 transition-colors"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <div className="mt-4 p-4 rounded-xl border border-dashed border-neutral-800 bg-neutral-950/30 text-center">
+                  <p className="text-xs text-neutral-500">
+                    No bottles on your tray yet. Scan your shelf or click quick-add below to start brewing recipes!
+                  </p>
+                </div>
+              )}
 
               {/* Quick Add Presets */}
               <div className="mt-5 pt-4 border-t border-neutral-800/60">
-                <span className="text-[11px] font-semibold tracking-wider uppercase text-neutral-500 mr-2">Quick Add:</span>
+                <span className="text-[11px] font-semibold tracking-wider uppercase text-neutral-500 mr-2">Quick Add Popular:</span>
                 <div className="inline-flex flex-wrap gap-1.5 mt-2">
                   {POPULAR_SHELF_PRESETS.filter(p => !myShelf.includes(p)).slice(0, 7).map((preset) => (
                     <button 
@@ -298,145 +339,165 @@ export default function ScentAlchemistApp() {
               </div>
             </div>
 
-            {/* Top 3 Designer Recipes Header */}
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-serif font-bold text-neutral-100 flex items-center gap-2">
-                  <Flame className="w-5 h-5 text-amber-500" />
-                  Top 3 Designer Profiles You Can Recreate
-                </h3>
-                <p className="text-xs text-neutral-400">Ranked by molecular accord compatibility & sillage balance</p>
-              </div>
-              <span className="text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-full">
-                {myShelf.length} Bottles Analyzed
-              </span>
-            </div>
-
-            {/* The 3 Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Card 1 */}
-              <div className="bg-neutral-900/80 border border-amber-500/30 rounded-2xl p-5 shadow-xl flex flex-col justify-between relative overflow-hidden group hover:border-amber-500/60 transition-all">
-                <div className="absolute top-0 right-0 bg-gradient-to-l from-amber-500 to-amber-600 text-neutral-950 font-black text-[10px] px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-                  #1 Match • 94%
+            {/* Recipes Section */}
+            {myShelf.length >= 2 ? (
+              <>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-serif font-bold text-neutral-100 flex items-center gap-2">
+                      <Flame className="w-5 h-5 text-amber-500" />
+                      Top 3 Designer Profiles You Can Recreate
+                    </h3>
+                    <p className="text-xs text-neutral-400">Ranked by molecular accord compatibility & sillage balance</p>
+                  </div>
+                  <span className="text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-full">
+                    {myShelf.length} Bottles Analyzed
+                  </span>
                 </div>
-                <div>
-                  <span className="text-[11px] font-semibold tracking-wider uppercase text-amber-400">Target Profile</span>
-                  <h4 className="text-lg font-serif font-bold text-neutral-100 mt-1">Dior Sauvage Elixir</h4>
-                  <p className="text-xs text-neutral-400 mt-1">Spicy-woody lavender with dark licorice and bitter grapefruit core.</p>
 
-                  <div className="mt-4 pt-4 border-t border-neutral-800 space-y-3">
-                    <div className="bg-neutral-950/70 p-3 rounded-xl border border-neutral-800/80">
-                      <span className="text-[10px] uppercase font-bold text-neutral-500 block">Step 1 • Base Anchor</span>
-                      <p className="text-xs font-semibold text-neutral-200 mt-0.5">2 Sprays of Lattafa Asad</p>
-                      <span className="text-[10px] text-neutral-400">Heavy cloves, nutmeg, dark licorice resin</span>
+                {/* The 3 Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Card 1 */}
+                  <div className="bg-neutral-900/80 border border-amber-500/30 rounded-2xl p-5 shadow-xl flex flex-col justify-between relative overflow-hidden group hover:border-amber-500/60 transition-all">
+                    <div className="absolute top-0 right-0 bg-gradient-to-l from-amber-500 to-amber-600 text-neutral-950 font-black text-[10px] px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+                      #1 Match • 94%
+                    </div>
+                    <div>
+                      <span className="text-[11px] font-semibold tracking-wider uppercase text-amber-400">Target Profile</span>
+                      <h4 className="text-lg font-serif font-bold text-neutral-100 mt-1">Dior Sauvage Elixir</h4>
+                      <p className="text-xs text-neutral-400 mt-1">Spicy-woody lavender with dark licorice and bitter grapefruit core.</p>
+
+                      <div className="mt-4 pt-4 border-t border-neutral-800 space-y-3">
+                        <div className="bg-neutral-950/70 p-3 rounded-xl border border-neutral-800/80">
+                          <span className="text-[10px] uppercase font-bold text-neutral-500 block">Step 1 • Base Anchor</span>
+                          <p className="text-xs font-semibold text-neutral-200 mt-0.5">2 Sprays of Lattafa Asad</p>
+                          <span className="text-[10px] text-neutral-400">Heavy cloves, nutmeg, dark licorice resin</span>
+                        </div>
+
+                        <div className="flex items-center justify-center text-[10px] text-amber-400 font-semibold gap-1.5 py-1">
+                          <RefreshCw className="w-3 h-3 animate-spin" />
+                          Wait 45–60s for alcohol carrier to flash off
+                        </div>
+
+                        <div className="bg-neutral-950/70 p-3 rounded-xl border border-neutral-800/80">
+                          <span className="text-[10px] uppercase font-bold text-neutral-500 block">Step 2 • Top Lift</span>
+                          <p className="text-xs font-semibold text-neutral-200 mt-0.5">1 Spray of Bleu de Chanel EdP</p>
+                          <span className="text-[10px] text-neutral-400">Spray directly over the first layer</span>
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="flex items-center justify-center text-[10px] text-amber-400 font-semibold gap-1.5 py-1">
-                      <RefreshCw className="w-3 h-3 animate-spin" />
-                      Wait 45–60s for alcohol carrier to flash off
+                    <div className="mt-4 pt-4 border-t border-neutral-800/60 bg-neutral-950/40 -mx-5 -mb-5 p-4 rounded-b-2xl">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 flex items-center gap-1">
+                        <Info className="w-3 h-3 text-amber-400" />
+                        Why They Match:
+                      </span>
+                      <p className="text-[11px] text-neutral-300 mt-1 leading-relaxed">
+                        The dense coumarin and spices in the base anchor the volatile citrus molecules, preventing them from evaporating quickly.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Card 2 */}
+                  <div className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between relative overflow-hidden group hover:border-amber-500/40 transition-all">
+                    <div className="absolute top-0 right-0 bg-neutral-800 text-neutral-300 font-bold text-[10px] px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+                      #2 Match • 91%
+                    </div>
+                    <div>
+                      <span className="text-[11px] font-semibold tracking-wider uppercase text-neutral-400">Target Profile</span>
+                      <h4 className="text-lg font-serif font-bold text-neutral-100 mt-1">Tom Ford Tobacco Vanille</h4>
+                      <p className="text-xs text-neutral-400 mt-1">Cured pipe tobacco, smoky resinous woods, and rich vanilla.</p>
+
+                      <div className="mt-4 pt-4 border-t border-neutral-800 space-y-3">
+                        <div className="bg-neutral-950/70 p-3 rounded-xl border border-neutral-800/80">
+                          <span className="text-[10px] uppercase font-bold text-neutral-500 block">Step 1 • Base Anchor</span>
+                          <p className="text-xs font-semibold text-neutral-200 mt-0.5">1 Spray of By the Fireplace</p>
+                          <span className="text-[10px] text-neutral-400">Restraint needed: heavy cade and guaiac woods</span>
+                        </div>
+
+                        <div className="flex items-center justify-center text-[10px] text-amber-400 font-semibold gap-1.5 py-1">
+                          <RefreshCw className="w-3 h-3" />
+                          Wait 60s for wood oils to anchor
+                        </div>
+
+                        <div className="bg-neutral-950/70 p-3 rounded-xl border border-neutral-800/80">
+                          <span className="text-[10px] uppercase font-bold text-neutral-500 block">Step 2 • Sweet Accent</span>
+                          <p className="text-xs font-semibold text-neutral-200 mt-0.5">2 Sprays of Zara Warm Black</p>
+                          <span className="text-[10px] text-neutral-400">Direct overlay or split application</span>
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="bg-neutral-950/70 p-3 rounded-xl border border-neutral-800/80">
-                      <span className="text-[10px] uppercase font-bold text-neutral-500 block">Step 2 • Top Lift</span>
-                      <p className="text-xs font-semibold text-neutral-200 mt-0.5">1 Spray of Bleu de Chanel EdP</p>
-                      <span className="text-[10px] text-neutral-400">Spray directly over the first layer</span>
+                    <div className="mt-4 pt-4 border-t border-neutral-800/60 bg-neutral-950/40 -mx-5 -mb-5 p-4 rounded-b-2xl">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 flex items-center gap-1">
+                        <Info className="w-3 h-3 text-amber-400" />
+                        Why They Match:
+                      </span>
+                      <p className="text-[11px] text-neutral-300 mt-1 leading-relaxed">
+                        Roasted chestnut phenols cut the sweet dessert quality of the vanilla into a dry, luxury pipe tobacco drydown.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Card 3 */}
+                  <div className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between relative overflow-hidden group hover:border-amber-500/40 transition-all">
+                    <div className="absolute top-0 right-0 bg-neutral-800 text-neutral-300 font-bold text-[10px] px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+                      #3 Match • 89%
+                    </div>
+                    <div>
+                      <span className="text-[11px] font-semibold tracking-wider uppercase text-neutral-400">Target Profile</span>
+                      <h4 className="text-lg font-serif font-bold text-neutral-100 mt-1">Roja Elysium / Aventus Absolu</h4>
+                      <p className="text-xs text-neutral-400 mt-1">Effervescent citrus-aromatic opening with smoky birch leather base.</p>
+
+                      <div className="mt-4 pt-4 border-t border-neutral-800 space-y-3">
+                        <div className="bg-neutral-950/70 p-3 rounded-xl border border-neutral-800/80">
+                          <span className="text-[10px] uppercase font-bold text-neutral-500 block">Step 1 • Base Anchor</span>
+                          <p className="text-xs font-semibold text-neutral-200 mt-0.5">2 Sprays of Club de Nuit Intense Man</p>
+                          <span className="text-[10px] text-neutral-400">Smoky birch tar, oakmoss, blackcurrant</span>
+                        </div>
+
+                        <div className="flex items-center justify-center text-[10px] text-amber-400 font-semibold gap-1.5 py-1">
+                          <RefreshCw className="w-3 h-3" />
+                          Wait 30–45s
+                        </div>
+
+                        <div className="bg-neutral-950/70 p-3 rounded-xl border border-neutral-800/80">
+                          <span className="text-[10px] uppercase font-bold text-neutral-500 block">Step 2 • Top Lift</span>
+                          <p className="text-xs font-semibold text-neutral-200 mt-0.5">2 Sprays of Bleu de Chanel EdP</p>
+                          <span className="text-[10px] text-neutral-400">Direct overlay to mask harsh opening</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 pt-4 border-t border-neutral-800/60 bg-neutral-950/40 -mx-5 -mb-5 p-4 rounded-b-2xl">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 flex items-center gap-1">
+                        <Info className="w-3 h-3 text-amber-400" />
+                        Why They Match:
+                      </span>
+                      <p className="text-[11px] text-neutral-300 mt-1 leading-relaxed">
+                        Smooth natural citrus and mint masks the synthetic opening of birch tar, turning it into an ultra-smooth niche profile.
+                      </p>
                     </div>
                   </div>
                 </div>
-
-                <div className="mt-4 pt-4 border-t border-neutral-800/60 bg-neutral-950/40 -mx-5 -mb-5 p-4 rounded-b-2xl">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 flex items-center gap-1">
-                    <Info className="w-3 h-3 text-amber-400" />
-                    Why They Match:
-                  </span>
-                  <p className="text-[11px] text-neutral-300 mt-1 leading-relaxed">
-                    The dense coumarin and spices in the base anchor the volatile citrus molecules, preventing them from evaporating quickly and creating the iconic sharp opening.
-                  </p>
-                </div>
+              </>
+            ) : (
+              /* Empty Shelf Guidance State */
+              <div className="border border-neutral-800 rounded-2xl p-12 text-center bg-neutral-900/30">
+                <FlaskConical className="w-12 h-12 text-amber-500/40 mx-auto mb-4 stroke-1" />
+                <h3 className="text-lg font-serif font-bold text-neutral-200">Your Tray is Waiting</h3>
+                <p className="text-xs text-neutral-400 max-w-md mx-auto mt-2 leading-relaxed">
+                  Add at least 2 fragrances to your wardrobe above (or scan your collection) to calculate custom molecular layering recipes.
+                </p>
+                <button
+                  onClick={() => setScanModalOpen(true)}
+                  className="mt-6 inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 text-amber-400 px-4 py-2 rounded-xl text-xs font-semibold transition-all"
+                >
+                  <Camera className="w-4 h-4" />
+                  Scan My Tray Now
+                </button>
               </div>
-
-              {/* Card 2 */}
-              <div className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between relative overflow-hidden group hover:border-amber-500/40 transition-all">
-                <div className="absolute top-0 right-0 bg-neutral-800 text-neutral-300 font-bold text-[10px] px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-                  #2 Match • 91%
-                </div>
-                <div>
-                  <span className="text-[11px] font-semibold tracking-wider uppercase text-neutral-400">Target Profile</span>
-                  <h4 className="text-lg font-serif font-bold text-neutral-100 mt-1">Tom Ford Tobacco Vanille</h4>
-                  <p className="text-xs text-neutral-400 mt-1">Cured pipe tobacco, smoky resinous woods, and rich vanilla.</p>
-
-                  <div className="mt-4 pt-4 border-t border-neutral-800 space-y-3">
-                    <div className="bg-neutral-950/70 p-3 rounded-xl border border-neutral-800/80">
-                      <span className="text-[10px] uppercase font-bold text-neutral-500 block">Step 1 • Base Anchor</span>
-                      <p className="text-xs font-semibold text-neutral-200 mt-0.5">1 Spray of By the Fireplace</p>
-                      <span className="text-[10px] text-neutral-400">Restraint needed: heavy cade and guaiac woods</span>
-                    </div>
-
-                    <div className="flex items-center justify-center text-[10px] text-amber-400 font-semibold gap-1.5 py-1">
-                      <RefreshCw className="w-3 h-3" />
-                      Wait 60s for wood oils to anchor
-                    </div>
-
-                    <div className="bg-neutral-950/70 p-3 rounded-xl border border-neutral-800/80">
-                      <span className="text-[10px] uppercase font-bold text-neutral-500 block">Step 2 • Sweet Accent</span>
-                      <p className="text-xs font-semibold text-neutral-200 mt-0.5">2 Sprays of Zara Warm Black</p>
-                      <span className="text-[10px] text-neutral-400">Direct overlay or split application</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-4 pt-4 border-t border-neutral-800/60 bg-neutral-950/40 -mx-5 -mb-5 p-4 rounded-b-2xl">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 flex items-center gap-1">
-                    <Info className="w-3 h-3 text-amber-400" />
-                    Why They Match:
-                  </span>
-                  <p className="text-[11px] text-neutral-300 mt-1 leading-relaxed">
-                    Roasted chestnut phenols cut the sweet dessert quality of the vanilla, grounding it into a photorealistic, dry luxury pipe tobacco drydown.
-                  </p>
-                </div>
-              </div>
-
-              {/* Card 3 */}
-              <div className="bg-neutral-900/80 border border-neutral-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between relative overflow-hidden group hover:border-amber-500/40 transition-all">
-                <div className="absolute top-0 right-0 bg-neutral-800 text-neutral-300 font-bold text-[10px] px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-                  #3 Match • 89%
-                </div>
-                <div>
-                  <span className="text-[11px] font-semibold tracking-wider uppercase text-neutral-400">Target Profile</span>
-                  <h4 className="text-lg font-serif font-bold text-neutral-100 mt-1">Roja Elysium / Aventus Absolu</h4>
-                  <p className="text-xs text-neutral-400 mt-1">Effervescent citrus-aromatic opening with smoky birch leather base.</p>
-
-                  <div className="mt-4 pt-4 border-t border-neutral-800 space-y-3">
-                    <div className="bg-neutral-950/70 p-3 rounded-xl border border-neutral-800/80">
-                      <span className="text-[10px] uppercase font-bold text-neutral-500 block">Step 1 • Base Anchor</span>
-                      <p className="text-xs font-semibold text-neutral-200 mt-0.5">2 Sprays of Club de Nuit Intense Man</p>
-                      <span className="text-[10px] text-neutral-400">Smoky birch tar, oakmoss, blackcurrant</span>
-                    </div>
-
-                    <div className="flex items-center justify-center text-[10px] text-amber-400 font-semibold gap-1.5 py-1">
-                      <RefreshCw className="w-3 h-3" />
-                      Wait 30–45s
-                    </div>
-
-                    <div className="bg-neutral-950/70 p-3 rounded-xl border border-neutral-800/80">
-                      <span className="text-[10px] uppercase font-bold text-neutral-500 block">Step 2 • Top Lift</span>
-                      <p className="text-xs font-semibold text-neutral-200 mt-0.5">2 Sprays of Bleu de Chanel EdP</p>
-                      <span className="text-[10px] text-neutral-400">Direct overlay to mask harsh opening</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-4 pt-4 border-t border-neutral-800/60 bg-neutral-950/40 -mx-5 -mb-5 p-4 rounded-b-2xl">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 flex items-center gap-1">
-                    <Info className="w-3 h-3 text-amber-400" />
-                    Why They Match:
-                  </span>
-                  <p className="text-[11px] text-neutral-300 mt-1 leading-relaxed">
-                    The smooth natural citrus and mint of the top layer masks the harsh chemical opening of the birch tar, turning it into an ultra-smooth niche profile.
-                  </p>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         ) : (
           /* Reverse Dupe Matcher Tab */
@@ -569,86 +630,4 @@ export default function ScentAlchemistApp() {
 
       {/* Camera / Photo Scanner Modal */}
       {scanModalOpen && (
-        <div className="fixed inset-0 bg-neutral-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
-            <button 
-              onClick={() => { setScanModalOpen(false); setScanStep('upload'); }}
-              className="absolute top-4 right-4 text-neutral-400 hover:text-neutral-200"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <h3 className="text-lg font-serif font-bold text-neutral-100 flex items-center gap-2">
-              <Camera className="w-5 h-5 text-amber-400" />
-              Scan Fragrance Shelf
-            </h3>
-
-            {scanStep === 'upload' && (
-              <div className="mt-6 space-y-4">
-                <div 
-                  onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-neutral-700 hover:border-amber-500/70 rounded-2xl p-8 text-center cursor-pointer transition-colors bg-neutral-950/50"
-                >
-                  <Upload className="w-8 h-8 text-neutral-400 mx-auto mb-2" />
-                  <p className="text-sm font-semibold text-neutral-200">Take a photo or upload an image</p>
-                  <p className="text-xs text-neutral-500 mt-1">Supports phone camera photos, JPG, PNG</p>
-                  <input 
-                    ref={fileInputRef}
-                    type="file" 
-                    accept="image/*" 
-                    capture="environment"
-                    onChange={handleFileUpload} 
-                    className="hidden" 
-                  />
-                </div>
-
-                <div className="text-center">
-                  <span className="text-xs text-neutral-500">or</span>
-                </div>
-
-                <button 
-                  onClick={simulatedScan}
-                  className="w-full bg-neutral-800 hover:bg-neutral-700 text-neutral-200 font-semibold py-2.5 rounded-xl text-xs transition-colors"
-                >
-                  Test with Sample Shelf Photo (Instant Demo)
-                </button>
-              </div>
-            )}
-
-            {scanStep === 'processing' && (
-              <div className="mt-8 text-center py-8 space-y-4">
-                <Loader2 className="w-8 h-8 text-amber-400 animate-spin mx-auto" />
-                <p className="text-sm font-semibold text-neutral-200">Scanning bottles & reading glass labels...</p>
-                <p className="text-xs text-neutral-500">Detecting bottle silhouettes and typography</p>
-              </div>
-            )}
-
-            {scanStep === 'review' && (
-              <div className="mt-6 space-y-4">
-                <p className="text-xs text-neutral-400">
-                  Detected {detectedBottles.length} bottles. Confirm or deselect before importing to your wardrobe:
-                </p>
-
-                <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
-                  {detectedBottles.map((b) => (
-                    <div key={b.name} className="flex items-center justify-between p-3 rounded-xl bg-neutral-950/70 border border-neutral-800 text-xs">
-                      <span className="font-semibold text-neutral-200">{b.name}</span>
-                      <span className="text-neutral-500 text-[11px]">{b.confidence}% confidence</span>
-                    </div>
-                  ))}
-                </div>
-
-                <button 
-                  onClick={confirmDetectedBottles}
-                  className="w-full bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold py-2.5 rounded-xl text-xs transition-colors mt-2"
-                >
-                  Confirm & Add Bottles to Shelf
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+        <div className="fixed inset-0 bg-neutral-950/80 backdrop-blur-md z-50
