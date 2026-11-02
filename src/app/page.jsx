@@ -13,7 +13,7 @@ const POPULAR_SHELF_PRESETS = [
   "Kilian Angels Share", "Versace Eros EdT", "Afnan 9PM", "Lattafa Khamrah"
 ];
 
-// Dynamic Database for Instant Alchemy
+// Dynamic Database for Instant Alchemy (What you can make NOW)
 const INSTANT_ALCHEMY_DATABASE = [
   {
     target: "Dior Sauvage Elixir",
@@ -61,101 +61,16 @@ const INSTANT_ALCHEMY_DATABASE = [
   }
 ];
 
-// Target definitions with naturalized text and removed purchase prices
-const BRIDGE_TARGET_DATABASE = [
-  {
-    name: "Bleu de Chanel Parfum",
-    aliases: ["bleu de chanel", "bdc parfum", "bleu de chanel parfum", "chanel blue"],
-    house: "Chanel",
-    retail: "£145 (100ml)",
-    notes: ["Lemon Zest", "Bergamot", "Mint", "Sandalwood", "Cedar", "Iso E Super", "Amber"],
-    potentialBridges: [
-      {
-        matchingShelfBottle: "Bleu de Chanel EdP",
-        ownedCoverage: "75%",
-        ownedRole: "Vibrant grapefruit, mint & ambroxan opening",
-        missingPieceName: "Lattafa Bade'e Al Oud",
-        missingRole: "Creamy resinous sandalwood & dense woody base",
-        targetMatch: "96%",
-        recipe: "Apply 2 sprays of your Bleu de Chanel EdP, wait 45s, then overlay 1 spray of your new sandalwood base to anchor the citrus into a rich pure Parfum drydown."
-      },
-      {
-        matchingShelfBottle: "Versace Dylan Blue",
-        ownedCoverage: "60%",
-        ownedRole: "Aquatic ambroxan & bergamot freshness",
-        missingPieceName: "Zara Sand Desert At Sunset",
-        missingRole: "Dry cedarwood, tonka & warm resinous anchor",
-        targetMatch: "91%",
-        recipe: "Layer 2 sprays of your Dylan Blue over 1 spray of your new warm dry cedar to dial back the sweet aquatic notes into refined Chanel woods."
-      }
-    ],
-    defaultSoloClone: {
-      name: "Armaf Club de Nuit Blue Iconic",
-      desc: "A highly rated alternative that beautifully captures the fresh, woody citrus vibe of Bleu de Chanel without breaking the bank."
-    }
-  },
-  {
-    name: "Angels Share",
-    aliases: ["angels share", "kilian angels share", "angel share"],
-    house: "Kilian Paris",
-    retail: "£200+ (50ml)",
-    notes: ["Cognac", "Cinnamon", "Tonka Bean", "Oak Wood", "Praline", "Vanilla"],
-    potentialBridges: [
-      {
-        matchingShelfBottle: "Lattafa Khamrah",
-        ownedCoverage: "70%",
-        ownedRole: "Sweet date, praline, cinnamon & vanilla core",
-        missingPieceName: "Zara Sand Desert At Sunset",
-        missingRole: "Dry boozy cognac oak & powdery iris",
-        targetMatch: "95%",
-        recipe: "Spray 2 sprays of your Khamrah, wait 45s, then overlay 1 spray of your new Zara Sand Desert to cut the syrupy sweetness into charred boozy oak barrels."
-      },
-      {
-        matchingShelfBottle: "Zara Warm Black",
-        ownedCoverage: "45%",
-        ownedRole: "Spiced vanilla and warm sweet amber",
-        missingPieceName: "Lattafa Khamrah",
-        missingRole: "Praline, heavy cinnamon, and rich boozy notes",
-        targetMatch: "90%",
-        recipe: "Layer 2 sprays of your new heavy praline clone over 1 spray of your Zara Warm Black for a dense holiday gourmand sillage."
-      }
-    ],
-    defaultSoloClone: {
-      name: "Lattafa Khamrah",
-      desc: "A fantastic, rich alternative that perfectly captures the warm cinnamon and praline feel of Angels Share."
-    }
-  },
-  {
-    name: "Aventus Absolu",
-    aliases: ["aventus", "creed aventus", "aventus absolu", "creed"],
-    house: "Creed",
-    retail: "£330 (75ml)",
-    notes: ["Blackcurrant", "Grapefruit", "Ginger", "Cinnamon", "Cardamom", "Birch Tar", "Patchouli"],
-    potentialBridges: [
-      {
-        matchingShelfBottle: "Armaf Club de Nuit Intense Man",
-        ownedCoverage: "65%",
-        ownedRole: "Smoky birch tar, pineapple blackcurrant & oakmoss base",
-        missingPieceName: "Lattafa Asad",
-        missingRole: "Dark cardamom, cinnamon spice & warm amber warmth",
-        targetMatch: "94%",
-        recipe: "Apply 2 sprays of your CDNIM, then add 1 spray of your new Lattafa Asad directly over it to turn classic smoky Aventus into the limited spiced Absolu edition."
-      }
-    ],
-    defaultSoloClone: {
-      name: "Montagne Parfums Pineapple Absolu",
-      desc: "A spot-on alternative that delivers the signature smoky, fruity profile of Aventus."
-    }
-  }
-];
-
 export default function ScentAlchemistApp() {
   const [myShelf, setMyShelf] = useState([]);
   const [customInput, setCustomInput] = useState("");
   
-  const [targetQuery, setTargetQuery] = useState("");
+  // AI Engine States
   const [targetSearchInput, setTargetSearchInput] = useState("");
+  const [isSynthesizing, setIsSynthesizing] = useState(false);
+  const [calculatedBridgeData, setCalculatedBridgeData] = useState(null);
 
+  // Scanner States
   const [scanModalOpen, setScanModalOpen] = useState(false);
   const [scanStep, setScanStep] = useState('upload');
   const [detectedBottles, setDetectedBottles] = useState([]);
@@ -216,13 +131,64 @@ export default function ScentAlchemistApp() {
     setScanStep('upload');
   };
 
-  const handleTargetSearch = (e) => {
-    e.preventDefault();
-    if (targetSearchInput.trim()) {
-      setTargetQuery(targetSearchInput.trim());
-      setTimeout(() => {
-        document.getElementById('synthesis-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
+  // THE LIVE AI CONNECTION
+  const handleTargetSearch = async (e) => {
+    e?.preventDefault();
+    if (!targetSearchInput.trim()) return;
+
+    const query = targetSearchInput.trim();
+    setIsSynthesizing(true);
+    setCalculatedBridgeData(null);
+
+    // Smooth scroll down to the loading area
+    setTimeout(() => {
+      document.getElementById('synthesis-results')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+
+    try {
+      // Ping our secure Engine Room (api/bridge/route.js)
+      const res = await fetch('/api/bridge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          inventory: myShelf,
+          target: query
+        })
+      });
+
+      if (!res.ok) throw new Error('Failed to connect to Scentmix Engine');
+      
+      const aiData = await res.json();
+      
+      // Structure the AI's response perfectly for our visual UI
+      const ownsBase = aiData.matchingShelfBottle && aiData.matchingShelfBottle !== 'None';
+      
+      setCalculatedBridgeData({
+        target: {
+          name: aiData.targetName || query,
+          retail: aiData.targetRetail || "Premium"
+        },
+        bridge: ownsBase ? {
+          targetMatch: aiData.targetMatch || "90%",
+          matchingShelfBottle: aiData.matchingShelfBottle,
+          ownedRole: aiData.ownedRole,
+          missingPieceName: aiData.missingPieceName,
+          missingRole: aiData.missingRole,
+          missingPrice: aiData.missingPrice || "Check Retailer",
+          recipe: aiData.recipe
+        } : null,
+        defaultSoloClone: !ownsBase ? {
+          name: aiData.missingPieceName,
+          desc: aiData.recipe,
+          price: aiData.missingPrice || "Check Retailer"
+        } : null
+      });
+
+    } catch (error) {
+      console.error(error);
+      alert("The Scentmix Engine is currently warming up. Please try again in a moment.");
+    } finally {
+      setIsSynthesizing(false);
     }
   };
 
@@ -233,30 +199,6 @@ export default function ScentAlchemistApp() {
       return ownsA && ownsB;
     });
   }, [myShelf]);
-
-  const calculatedBridgeData = useMemo(() => {
-    if (!targetQuery) return null;
-
-    const cleanTarget = targetQuery.toLowerCase().trim();
-    const targetObj = BRIDGE_TARGET_DATABASE.find(
-      (item) => item.name.toLowerCase() === cleanTarget || 
-                item.aliases.some((alias) => cleanTarget.includes(alias) || alias.includes(cleanTarget))
-    ) || BRIDGE_TARGET_DATABASE[0];
-
-    let bestOwnedBridge = null;
-    for (const bridge of targetObj.potentialBridges) {
-      if (myShelf.some(owned => owned.toLowerCase().includes(bridge.matchingShelfBottle.toLowerCase()) || 
-                                bridge.matchingShelfBottle.toLowerCase().includes(owned.toLowerCase()))) {
-        bestOwnedBridge = bridge;
-        break;
-      }
-    }
-
-    return {
-      target: targetObj,
-      bridge: bestOwnedBridge
-    };
-  }, [targetQuery, myShelf]);
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 font-sans selection:bg-amber-200 selection:text-stone-900 pb-24">
@@ -429,32 +371,21 @@ export default function ScentAlchemistApp() {
               placeholder="Input any designer scent you desire..."
               className="w-full bg-white border-2 border-stone-200 hover:border-stone-300 focus:border-stone-900 rounded-3xl py-5 pl-16 pr-16 text-lg font-serif text-stone-900 placeholder-stone-400 focus:outline-none transition-all shadow-xl shadow-stone-200/50"
             />
-            <button type="submit" className="absolute right-4 top-1/2 -translate-y-1/2 bg-stone-900 hover:bg-stone-800 text-white p-3 rounded-full transition-transform active:scale-95">
-              <ArrowRight className="w-5 h-5" />
+            <button type="submit" disabled={isSynthesizing} className="absolute right-4 top-1/2 -translate-y-1/2 bg-stone-900 hover:bg-stone-800 disabled:opacity-50 text-white p-3 rounded-full transition-transform active:scale-95">
+              {isSynthesizing ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowRight className="w-5 h-5" />}
             </button>
           </form>
 
-          <div className="flex flex-wrap justify-center gap-2 mb-8 max-w-3xl mx-auto">
-            {BRIDGE_TARGET_DATABASE.map((t) => (
-              <button
-                key={t.name}
-                type="button"
-                onClick={() => {
-                  setTargetQuery(t.name);
-                  setTargetSearchInput(t.name);
-                  setTimeout(() => {
-                    document.getElementById('synthesis-results')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  }, 100);
-                }}
-                className="bg-white border border-stone-200 text-stone-600 hover:border-stone-400 hover:text-stone-900 rounded-xl px-4 py-2 text-xs font-semibold shadow-sm transition-all active:scale-95"
-              >
-                {t.name}
-              </button>
-            ))}
-          </div>
-
           <div id="synthesis-results">
-            {calculatedBridgeData && (
+            {isSynthesizing && (
+              <div className="animate-in fade-in zoom-in-95 duration-500 max-w-4xl mx-auto mt-12 bg-white rounded-3xl p-16 shadow-2xl border border-stone-200 text-center flex flex-col items-center">
+                <Loader2 className="w-12 h-12 text-stone-900 animate-spin mb-6" />
+                <h3 className="font-serif text-2xl text-stone-900 mb-2">Synthesizing Profile...</h3>
+                <p className="text-stone-500 max-w-sm mx-auto">Cross-referencing your inventory with our global database to calculate the exact missing piece.</p>
+              </div>
+            )}
+
+            {!isSynthesizing && calculatedBridgeData && (
               <div className="animate-in fade-in zoom-in-95 duration-500 max-w-4xl mx-auto mt-12">
                 
                 {calculatedBridgeData.bridge ? (
@@ -510,7 +441,7 @@ export default function ScentAlchemistApp() {
 
                       <button className="w-full bg-stone-900 hover:bg-stone-800 text-white rounded-2xl py-5 flex items-center justify-center gap-3 font-bold text-lg transition-all shadow-xl active:scale-95">
                         <ShoppingBag className="w-5 h-5" />
-                        Acquire Missing Element
+                        Acquire Missing Element • {calculatedBridgeData.bridge.missingPrice}
                       </button>
                     </div>
                   </div>
@@ -518,14 +449,14 @@ export default function ScentAlchemistApp() {
                   <div className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl shadow-stone-300/50 border border-stone-200 text-center relative overflow-hidden">
                     <div className="absolute top-0 inset-x-0 h-2 bg-stone-900"></div>
                     <span className="text-xs font-bold text-stone-400 uppercase tracking-widest block mb-4">Closest Single Match</span>
-                    <h4 className="font-serif text-4xl text-stone-900 mb-4">{calculatedBridgeData.target.defaultSoloClone.name}</h4>
+                    <h4 className="font-serif text-4xl text-stone-900 mb-4">{calculatedBridgeData.defaultSoloClone.name}</h4>
                     <p className="text-base text-stone-600 max-w-xl mx-auto leading-relaxed mb-8">
-                      {calculatedBridgeData.target.defaultSoloClone.desc}
+                      {calculatedBridgeData.defaultSoloClone.desc}
                     </p>
                     
                     <button className="mx-auto bg-stone-900 hover:bg-stone-800 text-white rounded-2xl px-8 py-5 flex items-center justify-center gap-3 font-bold text-lg transition-all shadow-xl active:scale-95 hover:shadow-2xl">
                       <ShoppingBag className="w-5 h-5" />
-                      Acquire Alternative
+                      Acquire Alternative • {calculatedBridgeData.defaultSoloClone.price}
                     </button>
                     
                     <p className="text-xs text-stone-400 font-medium mt-8">
@@ -548,9 +479,7 @@ export default function ScentAlchemistApp() {
             >
               <X className="w-5 h-5" />
             </button>
-
             <h3 className="font-serif text-2xl font-bold text-stone-900 mb-6">Scan Inventory</h3>
-            
             {scanStep === 'upload' && (
               <div className="space-y-6">
                 <div 
@@ -569,78 +498,21 @@ export default function ScentAlchemistApp() {
                     className="hidden" 
                   />
                 </div>
-
-                <div className="flex items-center justify-center gap-4">
-                  <div className="h-px bg-stone-200 flex-1"></div>
-                  <span className="text-xs text-stone-400 font-bold uppercase">or</span>
-                  <div className="h-px bg-stone-200 flex-1"></div>
-                </div>
-
-                <button 
-                  onClick={simulatedScan}
-                  className="w-full bg-stone-100 hover:bg-stone-200 text-stone-900 rounded-xl px-6 py-4 text-sm font-bold transition-colors"
-                >
+                <button onClick={simulatedScan} className="w-full bg-stone-100 hover:bg-stone-200 text-stone-900 rounded-xl px-6 py-4 text-sm font-bold transition-colors">
                   Run Demo Calibration
                 </button>
               </div>
             )}
-
             {scanStep === 'processing' && (
               <div className="py-16 text-center">
                 <Loader2 className="w-10 h-10 text-stone-900 animate-spin mx-auto mb-6" />
                 <p className="text-sm font-bold text-stone-900 uppercase tracking-wider">Analyzing Image...</p>
               </div>
             )}
-
             {scanStep === 'review' && (
               <div className="space-y-6">
-                <p className="text-sm text-stone-600 font-medium">
-                  Review the detected bottles below.
-                </p>
-
-                <div className="space-y-3 max-h-56 overflow-y-auto pr-2">
-                  {detectedBottles.map((b, idx) => (
-                    <div key={idx} className="flex items-center gap-3 bg-stone-50 p-3 rounded-xl border border-stone-100">
-                      <input 
-                        type="text"
-                        value={b.name}
-                        onChange={(e) => updateDetected(idx, e.target.value)}
-                        className="flex-1 bg-transparent text-sm font-semibold text-stone-900 focus:outline-none"
-                      />
-                      <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">
-                        {b.confidence}%
-                      </span>
-                      <button 
-                        onClick={() => removeDetected(idx)}
-                        className="text-stone-400 hover:text-red-500 transition-colors p-1"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex gap-3">
-                  <input 
-                    type="text"
-                    value={newManualBottle}
-                    onChange={(e) => setNewManualBottle(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && addManualToDetected()}
-                    placeholder="Add missing item..."
-                    className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm text-stone-900 focus:outline-none focus:border-stone-900"
-                  />
-                  <button 
-                    onClick={addManualToDetected}
-                    className="bg-stone-900 text-white rounded-xl px-4 flex items-center justify-center hover:bg-stone-800 transition-colors"
-                  >
-                    <Plus className="w-5 h-5" />
-                  </button>
-                </div>
-
-                <button 
-                  onClick={confirmDetected}
-                  className="w-full bg-stone-900 hover:bg-stone-800 text-white rounded-xl px-6 py-4 text-sm font-bold transition-all active:scale-95 shadow-lg mt-2"
-                >
+                <p className="text-sm text-stone-600 font-medium">Review the detected bottles below.</p>
+                <button onClick={confirmDetected} className="w-full bg-stone-900 hover:bg-stone-800 text-white rounded-xl px-6 py-4 text-sm font-bold transition-all mt-2">
                   Import Inventory ({detectedBottles.length})
                 </button>
               </div>
