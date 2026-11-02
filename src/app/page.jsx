@@ -13,6 +13,54 @@ const POPULAR_SHELF_PRESETS = [
   "Kilian Angels Share", "Versace Eros EdT", "Afnan 9PM", "Lattafa Khamrah"
 ];
 
+// Dynamic Database for Instant Alchemy (What you can make NOW)
+const INSTANT_ALCHEMY_DATABASE = [
+  {
+    target: "Dior Sauvage Elixir",
+    match: "94%",
+    desc: "Spicy lavender with dark licorice and grapefruit core.",
+    bottleA: "Lattafa Asad",
+    roleA: "Base (2 Sprays)",
+    noteA: "Warm Spices & Resins",
+    bottleB: "Bleu de Chanel EdP",
+    roleB: "Top Accent (1 Spray)",
+    noteB: "Grapefruit & Mint"
+  },
+  {
+    target: "Tom Ford Tobacco Vanille",
+    match: "91%",
+    desc: "Cured pipe tobacco, smoky wood hearth, and sweet tonka.",
+    bottleA: "Maison Margiela By the Fireplace",
+    roleA: "Base (1 Spray)",
+    noteA: "Cade & Guaiac Wood",
+    bottleB: "Zara Warm Black",
+    roleB: "Accent Layer (2 Sprays)",
+    noteB: "Gourmand Vanilla & Tonka"
+  },
+  {
+    target: "Creed Aventus Absolu",
+    match: "94%",
+    desc: "Smoky birch tar modernized with dark cardamom and warm spices.",
+    bottleA: "Armaf Club de Nuit Intense Man",
+    roleA: "Base Layer (2 Sprays)",
+    noteA: "Smoky Birch & Pineapple",
+    bottleB: "Lattafa Asad",
+    roleB: "Spice Accent (1 Spray)",
+    noteB: "Cinnamon & Dark Licorice"
+  },
+  {
+    target: "Kilian Angels Share",
+    match: "95%",
+    desc: "Boozy cognac oak barrels with a syrupy praline and date core.",
+    bottleA: "Lattafa Khamrah",
+    roleA: "Sweet Core (2 Sprays)",
+    noteA: "Dates, Praline & Vanilla",
+    bottleB: "Zara Sand Desert At Sunset",
+    roleB: "Woody Accent (1 Spray)",
+    noteB: "Dry Oak & Iris"
+  }
+];
+
 // Target definitions with intelligent bridge logic
 const BRIDGE_TARGET_DATABASE = [
   {
@@ -188,6 +236,15 @@ export default function ScentAlchemistApp() {
     }
   };
 
+  // Dynamic calculation of what recipes the user currently possesses
+  const unlockedRecipes = useMemo(() => {
+    return INSTANT_ALCHEMY_DATABASE.filter(recipe => {
+      const ownsA = myShelf.some(b => b.toLowerCase().includes(recipe.bottleA.toLowerCase()) || recipe.bottleA.toLowerCase().includes(b.toLowerCase()));
+      const ownsB = myShelf.some(b => b.toLowerCase().includes(recipe.bottleB.toLowerCase()) || recipe.bottleB.toLowerCase().includes(b.toLowerCase()));
+      return ownsA && ownsB;
+    });
+  }, [myShelf]);
+
   const calculatedBridgeData = useMemo(() => {
     if (!targetQuery) return null;
 
@@ -215,11 +272,9 @@ export default function ScentAlchemistApp() {
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 font-sans selection:bg-amber-200 selection:text-stone-900 pb-24">
       
-      {/* Interactive Floating Header - NEW EXCITING BRANDING */}
+      {/* Interactive Floating Header */}
       <header className="sticky top-0 z-40 px-4 py-4 md:px-8">
         <div className="max-w-6xl mx-auto bg-white/80 backdrop-blur-lg border border-stone-200/50 shadow-sm rounded-3xl px-6 py-4 flex items-center justify-between transition-all">
-          
-          {/* Upgraded Logo Lockup */}
           <div className="flex items-center gap-4 hover:opacity-90 transition-opacity cursor-default">
             <div className="bg-stone-900 text-amber-400 p-2.5 rounded-xl shadow-md flex items-center justify-center">
               <Sparkles className="w-6 h-6" strokeWidth={2} />
@@ -228,7 +283,6 @@ export default function ScentAlchemistApp() {
               Scentmix
             </h1>
           </div>
-
           <div className="flex items-center gap-3 bg-stone-100 px-4 py-2 rounded-full text-xs font-bold text-stone-600 shadow-inner">
             <Layers className="w-4 h-4 text-stone-500" />
             <span className="hidden md:inline">Inventory</span> ({myShelf.length})
@@ -262,7 +316,7 @@ export default function ScentAlchemistApp() {
           </div>
         </div>
 
-        {/* SECTION 1: INVENTORY (Modern App Interface) */}
+        {/* SECTION 1: INVENTORY */}
         <div className="bg-white rounded-[2rem] shadow-xl shadow-stone-200/50 border border-stone-100 overflow-hidden mb-12">
           <div className="bg-stone-900 text-white px-8 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
             <h3 className="font-serif text-2xl">Step 01: What do you own?</h3>
@@ -276,7 +330,6 @@ export default function ScentAlchemistApp() {
           </div>
           
           <div className="p-8 md:p-10">
-            {/* Interactive Search/Add Bar */}
             <div className="relative flex items-center gap-3 mb-8">
               <div className="relative flex-1">
                 <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
@@ -297,7 +350,6 @@ export default function ScentAlchemistApp() {
               </button>
             </div>
 
-            {/* Visual Inventory Badges */}
             <div className="min-h-[120px] bg-stone-50 rounded-2xl border-2 border-dashed border-stone-200 p-6 flex flex-col justify-center mb-6">
               {myShelf.length > 0 ? (
                 <div className="flex flex-wrap gap-3">
@@ -315,7 +367,6 @@ export default function ScentAlchemistApp() {
               )}
             </div>
 
-            {/* Quick Add Chips */}
             <div>
               <p className="text-xs font-bold text-stone-400 uppercase tracking-wider mb-3 pl-2">Popular additions</p>
               <div className="flex flex-wrap gap-2">
@@ -333,7 +384,7 @@ export default function ScentAlchemistApp() {
           </div>
         </div>
 
-        {/* SECTION 1B: INSTANT ALCHEMY (Dynamic Pop-up) */}
+        {/* SECTION 1B: INSTANT ALCHEMY (Now 100% Dynamic) */}
         {myShelf.length >= 2 && (
           <div className="mb-16 animate-in slide-in-from-bottom-8 fade-in duration-700">
             <div className="flex items-center gap-3 mb-6">
@@ -341,43 +392,38 @@ export default function ScentAlchemistApp() {
               <h3 className="font-serif text-2xl text-stone-900">What you can recreate right now</h3>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-3xl p-8 shadow-lg shadow-stone-200/50 border border-stone-100 flex flex-col h-full">
-                <div className="bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full w-max mb-4 border border-emerald-200">
-                  94% Match Found
-                </div>
-                <h4 className="text-xl font-serif font-bold text-stone-900">Dior Sauvage Elixir</h4>
-                <p className="text-sm text-stone-500 mt-2 mb-6 flex-1">Spicy lavender with dark licorice and grapefruit core.</p>
-                <div className="bg-stone-50 rounded-2xl p-5 space-y-3">
-                  <div className="flex justify-between items-center border-b border-stone-200 pb-3">
-                    <span className="text-xs font-bold text-stone-400 uppercase tracking-wider">Base (2 Sprays)</span>
-                    <span className="text-sm font-semibold text-stone-800 text-right max-w-[60%]">Lattafa Asad</span>
+            {unlockedRecipes.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {unlockedRecipes.map(recipe => (
+                  <div key={recipe.target} className="bg-white rounded-3xl p-8 shadow-lg shadow-stone-200/50 border border-stone-100 flex flex-col h-full">
+                    <div className="bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full w-max mb-4 border border-emerald-200">
+                      {recipe.match} Match Found
+                    </div>
+                    <h4 className="text-xl font-serif font-bold text-stone-900">{recipe.target}</h4>
+                    <p className="text-sm text-stone-500 mt-2 mb-6 flex-1">{recipe.desc}</p>
+                    <div className="bg-stone-50 rounded-2xl p-5 space-y-3 border border-stone-200">
+                      <div className="flex justify-between items-center border-b border-stone-200 pb-3">
+                        <span className="text-xs font-bold text-stone-400 uppercase tracking-wider">{recipe.roleA}</span>
+                        <span className="text-sm font-semibold text-stone-800 text-right max-w-[60%]">{recipe.bottleA}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-bold text-stone-400 uppercase tracking-wider">{recipe.roleB}</span>
+                        <span className="text-sm font-semibold text-stone-800 text-right max-w-[60%]">{recipe.bottleB}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-stone-400 uppercase tracking-wider">Top (1 Spray)</span>
-                    <span className="text-sm font-semibold text-stone-800 text-right max-w-[60%]">Bleu de Chanel EdP</span>
-                  </div>
-                </div>
+                ))}
               </div>
-              
-              <div className="bg-white rounded-3xl p-8 shadow-lg shadow-stone-200/50 border border-stone-100 flex flex-col h-full">
-                <div className="bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full w-max mb-4 border border-emerald-200">
-                  91% Match Found
-                </div>
-                <h4 className="text-xl font-serif font-bold text-stone-900">Tom Ford Tobacco Vanille</h4>
-                <p className="text-sm text-stone-500 mt-2 mb-6 flex-1">Cured pipe tobacco, smoky wood hearth, and sweet tonka.</p>
-                <div className="bg-stone-50 rounded-2xl p-5 space-y-3">
-                  <div className="flex justify-between items-center border-b border-stone-200 pb-3">
-                    <span className="text-xs font-bold text-stone-400 uppercase tracking-wider">Base (1 Spray)</span>
-                    <span className="text-sm font-semibold text-stone-800 text-right max-w-[60%]">By the Fireplace</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-stone-400 uppercase tracking-wider">Top (2 Sprays)</span>
-                    <span className="text-sm font-semibold text-stone-800 text-right max-w-[60%]">Zara Warm Black</span>
-                  </div>
-                </div>
+            ) : (
+              /* Pending State when they have bottles but no known recipe matches */
+              <div className="bg-white border border-stone-200 shadow-sm rounded-3xl p-10 text-center flex flex-col items-center">
+                <FlaskConical className="w-10 h-10 text-stone-300 mb-4" />
+                <h4 className="font-serif text-xl text-stone-900 mb-2">Analyzing your collection...</h4>
+                <p className="text-stone-500 max-w-md mx-auto">
+                  You have {myShelf.length} bottles, but you haven't unlocked a complete synergistic pairing yet. Continue adding to your inventory to discover instant layering recipes.
+                </p>
               </div>
-            </div>
+            )}
           </div>
         )}
 
@@ -450,7 +496,6 @@ export default function ScentAlchemistApp() {
                         <span className="font-bold">{calculatedBridgeData.bridge.targetMatch} Match Possible</span>
                       </div>
 
-                      {/* THE VISUAL EQUATION */}
                       <div className="flex flex-col md:flex-row items-stretch justify-center gap-4 relative mb-8">
                         
                         {/* Box 1: Owned */}
@@ -475,7 +520,6 @@ export default function ScentAlchemistApp() {
                         </div>
                       </div>
 
-                      {/* THE EXPLICIT PROTOCOL */}
                       <div className="bg-stone-50 rounded-2xl p-6 md:p-8 border border-stone-200 mb-8">
                         <div className="flex items-center gap-3 mb-3">
                           <FlaskConical className="w-5 h-5 text-stone-400" />
@@ -486,7 +530,6 @@ export default function ScentAlchemistApp() {
                         </p>
                       </div>
 
-                      {/* BIG MONETIZATION CTA */}
                       <button className="w-full bg-stone-900 hover:bg-stone-800 text-white rounded-2xl py-5 flex items-center justify-center gap-3 font-bold text-lg transition-all shadow-xl active:scale-95">
                         <ShoppingBag className="w-5 h-5" />
                         Acquire Missing Element • {calculatedBridgeData.bridge.missingPrice}
