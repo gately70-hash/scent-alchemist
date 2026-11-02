@@ -13,7 +13,7 @@ const POPULAR_SHELF_PRESETS = [
   "Kilian Angels Share", "Versace Eros EdT", "Afnan 9PM", "Lattafa Khamrah"
 ];
 
-// Dynamic Database for Instant Alchemy (What you can make NOW)
+// Dynamic Database for Instant Alchemy
 const INSTANT_ALCHEMY_DATABASE = [
   {
     target: "Dior Sauvage Elixir",
@@ -61,7 +61,7 @@ const INSTANT_ALCHEMY_DATABASE = [
   }
 ];
 
-// Target definitions with intelligent bridge logic
+// Target definitions with naturalized text and removed purchase prices
 const BRIDGE_TARGET_DATABASE = [
   {
     name: "Bleu de Chanel Parfum",
@@ -75,7 +75,6 @@ const BRIDGE_TARGET_DATABASE = [
         ownedCoverage: "75%",
         ownedRole: "Vibrant grapefruit, mint & ambroxan opening",
         missingPieceName: "Lattafa Bade'e Al Oud",
-        missingPrice: "£18",
         missingRole: "Creamy resinous sandalwood & dense woody base",
         targetMatch: "96%",
         recipe: "Apply 2 sprays of your Bleu de Chanel EdP, wait 45s, then overlay 1 spray of your new sandalwood base to anchor the citrus into a rich pure Parfum drydown."
@@ -85,7 +84,6 @@ const BRIDGE_TARGET_DATABASE = [
         ownedCoverage: "60%",
         ownedRole: "Aquatic ambroxan & bergamot freshness",
         missingPieceName: "Zara Sand Desert At Sunset",
-        missingPrice: "£22",
         missingRole: "Dry cedarwood, tonka & warm resinous anchor",
         targetMatch: "91%",
         recipe: "Layer 2 sprays of your Dylan Blue over 1 spray of your new warm dry cedar to dial back the sweet aquatic notes into refined Chanel woods."
@@ -93,8 +91,7 @@ const BRIDGE_TARGET_DATABASE = [
     ],
     defaultSoloClone: {
       name: "Armaf Club de Nuit Blue Iconic",
-      price: "£38",
-      desc: "Direct clone of the Bleu de Chanel DNA with heavy longevity and zesty grapefruit-cedar projection."
+      desc: "A highly rated alternative that beautifully captures the fresh, woody citrus vibe of Bleu de Chanel without breaking the bank."
     }
   },
   {
@@ -109,7 +106,6 @@ const BRIDGE_TARGET_DATABASE = [
         ownedCoverage: "70%",
         ownedRole: "Sweet date, praline, cinnamon & vanilla core",
         missingPieceName: "Zara Sand Desert At Sunset",
-        missingPrice: "£22",
         missingRole: "Dry boozy cognac oak & powdery iris",
         targetMatch: "95%",
         recipe: "Spray 2 sprays of your Khamrah, wait 45s, then overlay 1 spray of your new Zara Sand Desert to cut the syrupy sweetness into charred boozy oak barrels."
@@ -119,7 +115,6 @@ const BRIDGE_TARGET_DATABASE = [
         ownedCoverage: "45%",
         ownedRole: "Spiced vanilla and warm sweet amber",
         missingPieceName: "Lattafa Khamrah",
-        missingPrice: "£24",
         missingRole: "Praline, heavy cinnamon, and rich boozy notes",
         targetMatch: "90%",
         recipe: "Layer 2 sprays of your new heavy praline clone over 1 spray of your Zara Warm Black for a dense holiday gourmand sillage."
@@ -127,8 +122,7 @@ const BRIDGE_TARGET_DATABASE = [
     ],
     defaultSoloClone: {
       name: "Lattafa Khamrah",
-      price: "£25",
-      desc: "The reigning champion for rich boozy cinnamon and praline gourmand sillage."
+      desc: "A fantastic, rich alternative that perfectly captures the warm cinnamon and praline feel of Angels Share."
     }
   },
   {
@@ -143,7 +137,6 @@ const BRIDGE_TARGET_DATABASE = [
         ownedCoverage: "65%",
         ownedRole: "Smoky birch tar, pineapple blackcurrant & oakmoss base",
         missingPieceName: "Lattafa Asad",
-        missingPrice: "£22",
         missingRole: "Dark cardamom, cinnamon spice & warm amber warmth",
         targetMatch: "94%",
         recipe: "Apply 2 sprays of your CDNIM, then add 1 spray of your new Lattafa Asad directly over it to turn classic smoky Aventus into the limited spiced Absolu edition."
@@ -151,8 +144,7 @@ const BRIDGE_TARGET_DATABASE = [
     ],
     defaultSoloClone: {
       name: "Montagne Parfums Pineapple Absolu",
-      price: "£35",
-      desc: "Captures the iconic birch leather and blackcurrant silhouette with masculine authority."
+      desc: "A spot-on alternative that delivers the signature smoky, fruity profile of Aventus."
     }
   }
 ];
@@ -161,11 +153,9 @@ export default function ScentAlchemistApp() {
   const [myShelf, setMyShelf] = useState([]);
   const [customInput, setCustomInput] = useState("");
   
-  // Target Search State
   const [targetQuery, setTargetQuery] = useState("");
   const [targetSearchInput, setTargetSearchInput] = useState("");
 
-  // Scanner States
   const [scanModalOpen, setScanModalOpen] = useState(false);
   const [scanStep, setScanStep] = useState('upload');
   const [detectedBottles, setDetectedBottles] = useState([]);
@@ -236,7 +226,6 @@ export default function ScentAlchemistApp() {
     }
   };
 
-  // Dynamic calculation of what recipes the user currently possesses
   const unlockedRecipes = useMemo(() => {
     return INSTANT_ALCHEMY_DATABASE.filter(recipe => {
       const ownsA = myShelf.some(b => b.toLowerCase().includes(recipe.bottleA.toLowerCase()) || recipe.bottleA.toLowerCase().includes(b.toLowerCase()));
@@ -272,7 +261,6 @@ export default function ScentAlchemistApp() {
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 font-sans selection:bg-amber-200 selection:text-stone-900 pb-24">
       
-      {/* Interactive Floating Header */}
       <header className="sticky top-0 z-40 px-4 py-4 md:px-8">
         <div className="max-w-6xl mx-auto bg-white/80 backdrop-blur-lg border border-stone-200/50 shadow-sm rounded-3xl px-6 py-4 flex items-center justify-between transition-all">
           <div className="flex items-center gap-4 hover:opacity-90 transition-opacity cursor-default">
@@ -292,7 +280,6 @@ export default function ScentAlchemistApp() {
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 mt-8">
         
-        {/* WELCOME PROTOCOL */}
         <div className="mb-16 text-center max-w-3xl mx-auto">
           <h2 className="font-serif text-4xl md:text-5xl text-stone-900 mb-8 font-medium">Welcome to Scentmix.</h2>
           <div className="grid md:grid-cols-2 gap-6 text-left">
@@ -316,7 +303,6 @@ export default function ScentAlchemistApp() {
           </div>
         </div>
 
-        {/* SECTION 1: INVENTORY */}
         <div className="bg-white rounded-[2rem] shadow-xl shadow-stone-200/50 border border-stone-100 overflow-hidden mb-12">
           <div className="bg-stone-900 text-white px-8 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
             <h3 className="font-serif text-2xl">Step 01: What do you own?</h3>
@@ -384,7 +370,6 @@ export default function ScentAlchemistApp() {
           </div>
         </div>
 
-        {/* SECTION 1B: INSTANT ALCHEMY (Now 100% Dynamic) */}
         {myShelf.length >= 2 && (
           <div className="mb-16 animate-in slide-in-from-bottom-8 fade-in duration-700">
             <div className="flex items-center gap-3 mb-6">
@@ -415,7 +400,6 @@ export default function ScentAlchemistApp() {
                 ))}
               </div>
             ) : (
-              /* Pending State when they have bottles but no known recipe matches */
               <div className="bg-white border border-stone-200 shadow-sm rounded-3xl p-10 text-center flex flex-col items-center">
                 <FlaskConical className="w-10 h-10 text-stone-300 mb-4" />
                 <h4 className="font-serif text-xl text-stone-900 mb-2">Analyzing your collection...</h4>
@@ -427,7 +411,6 @@ export default function ScentAlchemistApp() {
           </div>
         )}
 
-        {/* SECTION 2: THE BRIDGE ENGINE */}
         <div className="bg-stone-100 rounded-[2.5rem] p-6 md:p-12 shadow-inner border border-stone-200">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <span className="inline-flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-sm mb-6">
@@ -470,13 +453,11 @@ export default function ScentAlchemistApp() {
             ))}
           </div>
 
-          {/* ENGINE RESULTS */}
           <div id="synthesis-results">
             {calculatedBridgeData && (
               <div className="animate-in fade-in zoom-in-95 duration-500 max-w-4xl mx-auto mt-12">
                 
                 {calculatedBridgeData.bridge ? (
-                  /* SUCCESS ROUTE (Bridge Found) */
                   <div className="bg-white rounded-3xl overflow-hidden shadow-2xl shadow-stone-300/50 border border-stone-200">
                     
                     <div className="bg-stone-900 text-white p-8 md:p-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative overflow-hidden">
@@ -498,21 +479,18 @@ export default function ScentAlchemistApp() {
 
                       <div className="flex flex-col md:flex-row items-stretch justify-center gap-4 relative mb-8">
                         
-                        {/* Box 1: Owned */}
                         <div className="flex-1 bg-stone-50 rounded-2xl p-6 border border-stone-200 flex flex-col justify-center">
                           <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest block mb-2">01. You Already Own</span>
                           <h5 className="font-serif text-2xl text-stone-900 mb-2">{calculatedBridgeData.bridge.matchingShelfBottle}</h5>
                           <p className="text-sm text-stone-600">{calculatedBridgeData.bridge.ownedRole}</p>
                         </div>
 
-                        {/* Plus Icon Connecting Them */}
                         <div className="flex items-center justify-center -my-3 md:my-0 md:-mx-3 relative z-20">
                           <div className="bg-stone-900 text-white p-3 rounded-full shadow-lg border-4 border-white">
                             <Plus className="w-6 h-6" />
                           </div>
                         </div>
 
-                        {/* Box 2: Missing Link */}
                         <div className="flex-1 bg-white rounded-2xl p-6 border-2 border-stone-900 shadow-xl relative flex flex-col justify-center">
                           <span className="text-[10px] font-bold text-stone-900 uppercase tracking-widest block mb-2">02. Missing Element</span>
                           <h5 className="font-serif text-2xl text-stone-900 mb-2">{calculatedBridgeData.bridge.missingPieceName}</h5>
@@ -532,15 +510,14 @@ export default function ScentAlchemistApp() {
 
                       <button className="w-full bg-stone-900 hover:bg-stone-800 text-white rounded-2xl py-5 flex items-center justify-center gap-3 font-bold text-lg transition-all shadow-xl active:scale-95">
                         <ShoppingBag className="w-5 h-5" />
-                        Acquire Missing Element • {calculatedBridgeData.bridge.missingPrice}
+                        Acquire Missing Element
                       </button>
                     </div>
                   </div>
                 ) : (
-                  /* FALLBACK ROUTE (Solo Clone) */
                   <div className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl shadow-stone-300/50 border border-stone-200 text-center relative overflow-hidden">
                     <div className="absolute top-0 inset-x-0 h-2 bg-stone-900"></div>
-                    <span className="text-xs font-bold text-stone-400 uppercase tracking-widest block mb-4">Standard Alternative</span>
+                    <span className="text-xs font-bold text-stone-400 uppercase tracking-widest block mb-4">Closest Single Match</span>
                     <h4 className="font-serif text-4xl text-stone-900 mb-4">{calculatedBridgeData.target.defaultSoloClone.name}</h4>
                     <p className="text-base text-stone-600 max-w-xl mx-auto leading-relaxed mb-8">
                       {calculatedBridgeData.target.defaultSoloClone.desc}
@@ -548,11 +525,11 @@ export default function ScentAlchemistApp() {
                     
                     <button className="mx-auto bg-stone-900 hover:bg-stone-800 text-white rounded-2xl px-8 py-5 flex items-center justify-center gap-3 font-bold text-lg transition-all shadow-xl active:scale-95 hover:shadow-2xl">
                       <ShoppingBag className="w-5 h-5" />
-                      Acquire 1-Bottle Clone • {calculatedBridgeData.target.defaultSoloClone.price}
+                      Acquire Alternative
                     </button>
                     
-                    <p className="text-xs text-stone-400 font-semibold uppercase tracking-wide mt-8">
-                      Want to unlock 95% fidelity? Ensure your entire collection is logged above.
+                    <p className="text-xs text-stone-400 font-medium mt-8">
+                      Have more bottles? Add your full collection above to see if you can mix your way to an even closer match.
                     </p>
                   </div>
                 )}
@@ -562,7 +539,6 @@ export default function ScentAlchemistApp() {
         </div>
       </main>
 
-      {/* Modern Scanner Modal */}
       {scanModalOpen && (
         <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8 relative animate-in fade-in zoom-in-95 duration-200">
