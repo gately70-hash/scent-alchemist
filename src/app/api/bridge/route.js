@@ -3,11 +3,13 @@ import { NextResponse } from 'next/server';
 export async function POST(req) {
   try {
     const { inventory, target } = await req.json();
-    const apiKey = process.env.GEMINI_API_KEY;
+    
+    // We add .trim() just in case a space was accidentally copied with your API key
+    const apiKey = process.env.GEMINI_API_KEY?.trim();
 
     if (!apiKey) {
       console.error("Missing API Key in Vercel");
-      return NextResponse.json({ error: 'API key not configured in Vercel' }, { status: 500 });
+      return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
     }
 
     const prompt = `You are a master fragrance alchemist and luxury scent expert. 
@@ -31,8 +33,8 @@ export async function POST(req) {
       "recipe": "A clear, 1-sentence protocol on how to spray them together."
     }`;
 
-    // Ping Gemini with strict JSON mode enabled
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    // Pointing directly to the -latest model to clear the 404 error
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -43,8 +45,11 @@ export async function POST(req) {
       })
     });
 
+    // If Google rejects it, this decoder will print exactly why in your Vercel logs
     if (!response.ok) {
-      throw new Error(`Google API responded with status: ${response.status}`);
+      const errorText = await response.text();
+      console.error("GOOGLE API COMPLAINT:", errorText);
+      throw new Error(`Google API failed: ${errorText}`);
     }
 
     const data = await response.json();
