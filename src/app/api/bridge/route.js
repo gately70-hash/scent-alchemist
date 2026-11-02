@@ -30,8 +30,8 @@ export async function POST(req) {
       "recipe": "A clear, 1-sentence protocol on how to spray them together."
     }`;
 
-    // Upgraded directly to the current gemini-2.5-pro model
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${apiKey}`, {
+    // FIX: Using the official /v1/ production endpoint and the active gemini-2.5-pro model
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-2.5-pro:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
