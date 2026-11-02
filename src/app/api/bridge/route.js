@@ -3,8 +3,6 @@ import { NextResponse } from 'next/server';
 export async function POST(req) {
   try {
     const { inventory, target } = await req.json();
-    
-    // We add .trim() just in case a space was accidentally copied with your API key
     const apiKey = process.env.GEMINI_API_KEY?.trim();
 
     if (!apiKey) {
@@ -33,8 +31,8 @@ export async function POST(req) {
       "recipe": "A clear, 1-sentence protocol on how to spray them together."
     }`;
 
-    // Pointing directly to the -latest model to clear the 404 error
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
+    // Reverted to the standard gemini-1.5-flash model endpoint
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -45,16 +43,24 @@ export async function POST(req) {
       })
     });
 
-    // If Google rejects it, this decoder will print exactly why in your Vercel logs
+    const data = await response.json();
+
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("GOOGLE API COMPLAINT:", errorText);
-      throw new Error(`Google API failed: ${errorText}`);
+      console.error("GOOGLE API ERROR:", data);
+      throw new Error(`Google API failed: ${JSON.stringify(data)}`);
     }
 
-    const data = await response.json();
-    const aiText = data.candidates[0].content.parts[0].text;
+    // Safety net to catch empty AI responses before they crash the app
+    if (!data.candidates || data.candidates.length === 0) {
+       console.error("No candidates returned from Google. Full response:", data);
+       throw new Error("AI returned an empty response.");
+    }
+
+    let aiText = data.candidates[0].content.parts[0].text;
     
+    // Strip out markdown if the AI stubbornly includes it
+    aiText = aiText.replace(/```json/g, '').replace(/```/g, '').trim();
+
     return NextResponse.json(JSON.parse(aiText));
     
   } catch (error) {
