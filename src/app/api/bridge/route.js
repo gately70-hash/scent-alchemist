@@ -55,3 +55,4 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Failed to synthesize recipe' }, { status: 500 });
   }
 }
+
