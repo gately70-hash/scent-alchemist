@@ -31,15 +31,12 @@ export async function POST(req) {
       "recipe": "A clear, 1-sentence protocol on how to spray them together."
     }`;
 
-    // Reverted to the standard gemini-1.5-flash model endpoint
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    // Switched to the universally supported, globally open gemini-pro model
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { 
-          responseMimeType: "application/json" 
-        }
+        contents: [{ parts: [{ text: prompt }] }]
       })
     });
 
@@ -50,9 +47,8 @@ export async function POST(req) {
       throw new Error(`Google API failed: ${JSON.stringify(data)}`);
     }
 
-    // Safety net to catch empty AI responses before they crash the app
     if (!data.candidates || data.candidates.length === 0) {
-       console.error("No candidates returned from Google. Full response:", data);
+       console.error("Empty response from Google:", data);
        throw new Error("AI returned an empty response.");
     }
 
